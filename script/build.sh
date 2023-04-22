@@ -1,6 +1,9 @@
 #! /bin/bash
 
 ROOT="$(dirname "$0")"
+CLEAN=./script/clean.sh
+
+$CLEAN
 
 echo "Relocating script to '$ROOT'..."
 cd "$ROOT"
