@@ -1,7 +1,7 @@
 proc A {
     aux = AND($0, $1);
     #0 = OR(aux, $2);
-}
+};
 
 INPUT (3);
 
