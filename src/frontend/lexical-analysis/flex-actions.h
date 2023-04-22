@@ -19,23 +19,80 @@
  * largo de aquello que se va a almacenar.
  */
 
-// Bloque de comentarios multilínea.
-void BeginCommentPatternAction();
-void EndCommentPatternAction();
+// Bloque de comentarios multilínea
+void BeginBlockCommentPatternAction();
+void EndBlockCommentPatternAction();
 
-// Patrones terminales del lenguaje diseñado.
-token AdditionOperatorPatternAction(const char * lexeme);
-token CloseParenthesisPatternAction(const char * lexeme);
-token DivisionOperatorPatternAction(const char * lexeme);
-token IntegerPatternAction(const char * lexeme, const int length);
-token MultiplicationOperatorPatternAction(const char * lexeme);
+// Comentario inline
+void BeginInlineCommentPatternAction();
+void EndInlineCommentPatternAction();
+
+
+// -------------------------- Patrones terminales del lenguaje diseñado --------------------------------
+
+// Se ejecuta al analizar el token "PROC" o "proc"
+token ProcessorPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "INPUT" o "input"
+token InputPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "OUTPUT" o "output"
+token OutputPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "TRUE" o "true"
+token TruePatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "FALSE" o "false"
+token FalsePatternAction(const char * lexeme);
+
+// Se ejecuta al analizar un operador unario (NOT/not, BUFF/buff)
+token UnaryOperatorPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar un operador binario (AND/and, OR/or, NAND/nand, NOR/nor, XOR/xor, XNOR/xnor)
+token BinaryOperatorPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "="
+token AssignmentOperatorPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "->"
+token ArrowOperatorPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "("
 token OpenParenthesisPatternAction(const char * lexeme);
-token SubtractionOperatorPatternAction(const char * lexeme);
 
-// Patrón desconocido, permite abortar debido a un error de sintaxis.
-token UnknownPatternAction(const char * lexeme, const int length);
+// Se ejecuta al analizar el token ")"
+token CloseParenthesisPatternAction(const char * lexeme);
 
-// Regla que no hace nada, permite ignorar parte de la entrada.
+// Se ejecuta al analizar el token "{"
+token OpenBracesPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "}"
+token CloseBracesPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token ","
+token CommaPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token ";"
+token SemicolonPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "$"
+token DollarSignPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "#"
+token HashSignPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar un token con formato de nombre de variable
+token VariableIdentifierPatternAction(const char * lexeme, const int length);
+
+// Se ejecuta al analizar un token con formato de número
+token IntegerPatternAction(const char * lexeme, const int length);
+
+// -------------------------- Patrones terminales del lenguaje diseñado --------------------------------
+
+// Regla que no hace nada, permite ignorar parte de la entrada
 void IgnoredPatternAction(const char * lexeme, const int length);
+
+// Patrón desconocido, permite abortar debido a un error de sintaxis
+token UnknownPatternAction(const char * lexeme, const int length);
 
 #endif

@@ -1,4 +1,3 @@
-#include "backend/code-generation/generator.h"
 #include "backend/support/logger.h"
 #include "backend/support/shared.h"
 #include "frontend/syntactic-analysis/bison-parser.h"
@@ -11,7 +10,6 @@ CompilerState state;
 const int main(const int argumentCount, const char ** arguments) {
 	// Inicializar estado de la aplicación.
 	state.program = NULL;
-	state.result = 0;
 	state.succeed = false;
 
 	// Mostrar parámetros recibidos por consola.
@@ -28,7 +26,6 @@ const int main(const int argumentCount, const char ** arguments) {
 			// inicial de la gramática satisfactoriamente.
 			if (state.succeed) {
 				LogInfo("La compilacion fue exitosa.");
-				Generator(state.result);
 			}
 			else {
 				LogError("Se produjo un error en la aplicacion.");

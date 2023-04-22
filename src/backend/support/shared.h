@@ -31,7 +31,6 @@ extern int yyparse(void);
 
 // Emular tipo "boolean".
 typedef enum {
-
 	false = 0,
 	true = 1
 } boolean;
@@ -46,7 +45,7 @@ typedef struct {
 	boolean succeed;
 
 	// Indica el resultado de la compilación (para la calculadora).
-	int result;
+	// int result;
 
 	// El nodo raíz del AST (se usará cuando se implemente el backend).
 	Program * program;

@@ -23,18 +23,37 @@
 
 	// Terminales.
 	token token;
+	const char * identifier;
 	int integer;
 }
 
 // IDs y tipos de los tokens terminales generados desde Flex.
-%token <token> ADD
-%token <token> SUB
-%token <token> MUL
-%token <token> DIV
+%token <token> PROCESSOR
+
+%token <token> INPUT
+%token <token> OUTPUT
+
+%token <token> TRUE
+%token <token> FALSE
+
+%token <token> UNARY_OP
+%token <token> BINARY_OP
+%token <token> ASSIGNMENT_OP
+%token <token> ARROW_OP
 
 %token <token> OPEN_PARENTHESIS
 %token <token> CLOSE_PARENTHESIS
 
+%token <token> OPEN_BRACES
+%token <token> CLOSE_BRACES
+
+%token <token> COMMA
+%token <token> SEMICOLON
+
+%token <token> DOLLAR_SIGN
+%token <token> HASH_SIGN
+
+%token <identifier> IDENTIFIER
 %token <integer> INTEGER
 
 // Tipos de dato para los no-terminales generados desde Bison.
