@@ -1,0 +1,15 @@
+/*
+    Esto es un
+    comentario
+    en bloque
+
+    proces A [
+        $0 = #0;
+        #1 = AnD($5, 0);
+        #2 = OR(true, FalSe);
+    ]
+
+    INPUT(2);
+    INPUT -> OUTPUT -> A -> OUTPUT;
+
+*/

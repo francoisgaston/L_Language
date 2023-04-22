@@ -1,0 +1,15 @@
+proc A {
+    aux = OR($0, $2);
+    aux2 = AND($1, $3);
+    #0 = BUFF(aux);
+    #1 = XOR(aux, aux2);
+};
+
+proc B {
+    aux = NOT($0);
+    aux2 = NAND($0, $1);
+    #0 = XOR(aux, aux2);
+};
+
+input (4);
+input -> A -> B -> output;

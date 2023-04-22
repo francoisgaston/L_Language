@@ -1,0 +1,12 @@
+proc A {
+    #0 = AND($0, $1);
+};
+
+proc B {
+    aux = OR($0, $1);
+    aux2 = AND($1, $2);
+    #0 = OR(aux, aux2);
+};
+
+INPUT(2);
+INPUT -> {A, true, false} -> B -> OUTPUT;

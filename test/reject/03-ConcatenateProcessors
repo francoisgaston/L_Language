@@ -1,0 +1,11 @@
+proc A {
+    aux = AND($0, $1);
+    proc B {
+        aux = OR($1, $2);
+        #0 = BUFF(aux);
+    };
+    #0 = NOT(aux);
+};
+
+INPUT(3);
+INPUT -> A -> OUTPUT;

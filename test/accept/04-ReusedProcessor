@@ -1,0 +1,29 @@
+proc A {
+    #0 = AND($0, $3);
+    aux = OR($0, $1);
+    aux2 = XOR($2, $3);
+    #1 = AND(aux, aux2);
+};
+
+proc B1 {
+    aux = AND($0, $1);
+    aux2 = XOR($0, true);
+    aux3 = XOR($1, true);
+    #0 = BUFF(aux);
+    #1 = XOR(aux2, aux3);
+};
+
+proc B2 {
+    hola = NAND($0, $1);
+    que = XNOR($0, false);
+    chau = OR($1, false);
+    #0 = AND(hola, que);
+    #1 = OR(hola, chau);
+    #2 = and(que, chau);
+};
+
+INPUT (4);
+input -> A -> aux_a;
+aux_a -> B1 -> aux_b1;
+aux_a -> B2 -> aux_b2;
+{ aux_b1, aux_b2 } -> output;

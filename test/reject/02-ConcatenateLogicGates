@@ -1,0 +1,6 @@
+proc A {
+    #0 = AND(OR($0, $1), NOT(XOR($2, true)));
+}
+
+INPUT(3);
+INPUT -> A -> OUTPUT;

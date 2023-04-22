@@ -1,0 +1,16 @@
+proc A {
+    #0 = AND(true, FALSE);
+    #1 = XOR(true, FALSE);
+    #2 = OR(true, FALSE);
+    #3 = NOT(true);
+    #4 = BUFF(true);
+};
+
+proc B {
+    #0 = NAND(true, FALSE);
+    #1 = XNOR(true, FALSE);
+    #2 = NOR(true, FALSE);
+};
+
+INPUT (0);
+INPUT -> {A, B} -> OUTPUT;
