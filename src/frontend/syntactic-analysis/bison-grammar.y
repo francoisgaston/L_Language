@@ -16,14 +16,24 @@
 	*/
 
 	// No-terminales (frontend).
+	int start_grammar;
 	int program;
-	int expression;
-	int factor;
-	int constant;
+	int input;
+	int proc;
+	int block;
+	int line;
+	int exit_var;
+	int operator;
+	int argument;
+	int connection;
+	int arrow;
+	int new_line_arrow;
+	int group;
+	int group_aux;
 
 	// Terminales.
 	token token;
-	const char * identifier;
+	const char* identifier;
 	int integer;
 }
 
@@ -57,23 +67,91 @@
 %token <integer> INTEGER
 
 // Tipos de dato para los no-terminales generados desde Bison.
+%type <start_grammar> start_grammar
 %type <program> program
-%type <expression> expression
-%type <factor> factor
-%type <constant> constant
+%type <proc> proc
+%type <input> input
+%type <block> block
+%type <line> line
+%type <exit_var> exit_var
+%type <operator> operator
+%type <argument> argument
+%type <connection> connection
+%type <arrow> arrow
+%type <new_line_arrow> new_line_arrow
+%type <group> group
+%type <group_aux> group_aux
+
+
 
 // Reglas de asociatividad y precedencia (de menor a mayor).
-%left ADD SUB
-%left MUL DIV
+//%left ADD SUB
+//%left MUL DIV
 
 // El símbolo inicial de la gramatica.
-%start program
+%start start_grammar
 
 %%
-
-program: expression													{ $$ = ProgramGrammarAction($1); }
+start_grammar: program 					{$$ = ProgramGrammarAction($1);}
 	;
 
+program: proc program 						{ $$ = ProcessorAdditionAction($1,$2); }
+		| input connection 					{ $$ = ConnectionDefinitionAction($1, $2);}
+	;
+
+proc: PROCESSOR IDENTIFIER OPEN_BRACES block CLOSE_BRACES SEMICOLON			{ $$ = ProcessorDefinitionAction($2,$4); }
+	;
+	
+block: line block 	{ $$ = MultiLineBlockDefinitionAction($1,$2);}
+		| line	   	{ $$ = SingleLineBlockDefinitionAction($1);}	
+	;
+
+line: IDENTIFIER ASSIGNMENT_OP operator SEMICOLON 	{ $$ = LocalVariableAssignmentAction($1,$3);}
+	| exit_var ASSIGNMENT_OP operator SEMICOLON 	{ $$ = ExitVariableAssignmentAction($1,$3);}
+	;
+
+exit_var: HASH_SIGN INTEGER  	{ $$ = ExitVariableDefinitionAction($2);}
+	;
+
+operator: BINARY_OP OPEN_PARENTHESIS argument COMMA argument CLOSE_PARENTHESIS 	{ $$ = BinaryOperationAction($1, $3, $5);}
+		| UNARY_OP OPEN_PARENTHESIS argument CLOSE_PARENTHESIS 					{ $$ = UnaryOperationAction($1,$3);}
+	;
+
+argument: IDENTIFIER  			{ $$ = IdentifierArgumentAction($1);}
+		| DOLLAR_SIGN INTEGER  	{ $$ = InputVariableArgumentAction($2);}
+		| TRUE 					{ $$ = ConstantArgumentAction($1);}
+		| FALSE					{ $$ = ConstantArgumentAction($1);}
+	;
+
+
+input: INPUT OPEN_PARENTHESIS INTEGER CLOSE_PARENTHESIS SEMICOLON  	{ $$ = InputCountDefinitionAction($3);}
+	;
+
+connection: INPUT arrow			{ $$ = ConnectionBlockDefinitionAction($2);}
+	;
+
+arrow: ARROW_OP IDENTIFIER arrow  										{ $$ = SingleIdentifierArrowAction($2, $3);}
+	| ARROW_OP OPEN_BRACES group CLOSE_BRACES arrow 					{ $$ = GroupIdentifierArrowAction($3,$5);}
+	| ARROW_OP OUTPUT SEMICOLON											{ $$ = OutputEndArrowAction();}
+	| ARROW_OP IDENTIFIER SEMICOLON new_line_arrow						{ $$ = IdentifierEndArrowAction($2,$4);}
+	| ARROW_OP OPEN_BRACES group CLOSE_BRACES SEMICOLON new_line_arrow	{ $$ = GroupeIdentifierEndArrowAction($3,$6);}
+	;
+
+new_line_arrow: INPUT arrow 					{ $$ = InputNewLineArrowAction($2); }
+	| IDENTIFIER arrow							{ $$ = IdentifierNewLineArrowAction($1, $2);}
+	| OPEN_BRACES group CLOSE_BRACES arrow		{ $$ = GroupIdentifierNewLineArrowAction($2,$4);}
+	;
+
+group: IDENTIFIER COMMA group_aux				{ $$ = GroupDefinitionAction($1, $3);}
+	;
+
+group_aux: IDENTIFIER COMMA group_aux			{ $$ = GroupDefinitionAction($1, $3);}
+	| IDENTIFIER								{ $$ = GroupLastIdentifierAction($1);}
+	;
+
+
+
+/*
 expression: expression[left] ADD expression[right]					{ $$ = AdditionExpressionGrammarAction($left, $right); }
 	| expression[left] SUB expression[right]						{ $$ = SubtractionExpressionGrammarAction($left, $right); }
 	| expression[left] MUL expression[right]						{ $$ = MultiplicationExpressionGrammarAction($left, $right); }
@@ -87,5 +165,6 @@ factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactor
 
 constant: INTEGER													{ $$ = IntegerConstantGrammarAction($1); }
 	;
+*/
 
 %%

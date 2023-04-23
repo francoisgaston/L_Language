@@ -47,42 +47,149 @@ int ProgramGrammarAction(const int value) {
 	return value;
 }
 
-int AdditionExpressionGrammarAction(const int leftValue, const int rightValue) {
-	LogDebug("\tAdditionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-	return Add(leftValue, rightValue);
+// int AdditionExpressionGrammarAction(const int leftValue, const int rightValue) {
+// 	LogDebug("\tAdditionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
+// 	return Add(leftValue, rightValue);
+// }
+
+// int SubtractionExpressionGrammarAction(const int leftValue, const int rightValue) {
+// 	LogDebug("\tSubtractionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
+// 	return Subtract(leftValue, rightValue);
+// }
+
+// int MultiplicationExpressionGrammarAction(const int leftValue, const int rightValue) {
+// 	LogDebug("\tMultiplicationExpressionGrammarAction(%d, %d)", leftValue, rightValue);
+// 	return Multiply(leftValue, rightValue);
+// }
+
+// int DivisionExpressionGrammarAction(const int leftValue, const int rightValue) {
+// 	LogDebug("\tDivisionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
+// 	return Divide(leftValue, rightValue);
+// }
+
+// int FactorExpressionGrammarAction(const int value) {
+// 	LogDebug("\tFactorExpressionGrammarAction(%d)", value);
+// 	return value;
+// }
+
+// int ExpressionFactorGrammarAction(const int value) {
+// 	LogDebug("\tExpressionFactorGrammarAction(%d)", value);
+// 	return value;
+// }
+
+// int ConstantFactorGrammarAction(const int value) {
+// 	LogDebug("\tConstantFactorGrammarAction(%d)", value);
+// 	return value;
+// }
+
+// int IntegerConstantGrammarAction(const int value) {
+// 	LogDebug("\tIntegerConstantGrammarAction(%d)", value);
+// 	return value;
+// }
+
+
+
+//NOSOTROS
+
+int ProcessorAdditionAction(const int proc, const int program){
+	LogDebug("\tProcessorAdditionAction(%d, %d)", proc, program);
+	return true;
 }
 
-int SubtractionExpressionGrammarAction(const int leftValue, const int rightValue) {
-	LogDebug("\tSubtractionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-	return Subtract(leftValue, rightValue);
+int ConnectionDefinitionAction(const int input, const int conection){
+	LogDebug("\tConnectionDefinitionAction(%d, %d)", input, conection);
+	return true;
 }
 
-int MultiplicationExpressionGrammarAction(const int leftValue, const int rightValue) {
-	LogDebug("\tMultiplicationExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-	return Multiply(leftValue, rightValue);
+int ProcessorDefinitionAction(const char* identifier,const int block){
+	LogDebug("ProcessorDefinitionAction(%s,%d)",identifier, block);
+	return true;
 }
-
-int DivisionExpressionGrammarAction(const int leftValue, const int rightValue) {
-	LogDebug("\tDivisionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-	return Divide(leftValue, rightValue);
+int MultiLineBlockDefinitionAction(const int line,const int block){
+	LogDebug("MultiLineBlockDefinitionAction(%d, %d)", line, block);
+	return true;
 }
-
-int FactorExpressionGrammarAction(const int value) {
-	LogDebug("\tFactorExpressionGrammarAction(%d)", value);
-	return value;
+int SingleLineBlockDefinitionAction(const int line){
+	LogDebug("SingleLineBlockDefinitionAction(%d)", line);
+	return true;
 }
-
-int ExpressionFactorGrammarAction(const int value) {
-	LogDebug("\tExpressionFactorGrammarAction(%d)", value);
-	return value;
+int LocalVariableAssignmentAction(const char* var,const int value){
+	LogDebug("LocalVariableAssignmentAction(%s, %d)", var, value);
+	return true;
 }
-
-int ConstantFactorGrammarAction(const int value) {
-	LogDebug("\tConstantFactorGrammarAction(%d)", value);
-	return value;
+int ExitVariableAssignmentAction(const int exit_var,const int value){
+	LogDebug("ExitVariableAssignmentAction(%d, %d)", exit_var, value);
+	return true;
 }
-
-int IntegerConstantGrammarAction(const int value) {
-	LogDebug("\tIntegerConstantGrammarAction(%d)", value);
-	return value;
+int ExitVariableDefinitionAction(const int exit_var_number){
+	LogDebug("ExitVariableDefinitionAction(%d)", exit_var_number);
+	return true;
+}
+int BinaryOperationAction(const int binary_op, const int arg1, const int arg2){
+	LogDebug("BinaryOperationAction(%d, %d, %d)", binary_op, arg1, arg2);
+	return true;
+}
+int UnaryOperationAction(const int unary_op, const int arg){
+	LogDebug("UnaryOperationAction(%d, %d)", unary_op, arg);
+	return true;
+}
+int IdentifierArgumentAction(const char* identifier){
+	LogDebug("IdentifierArgumentAction(%s)", identifier);
+	return true;
+}
+int InputVariableArgumentAction(const int input_number){
+	LogDebug("InputVariableArgumentAction(%d)", input_number);
+	return true;
+}
+int ConstantArgumentAction(const int value){
+	LogDebug("ConstantArgumentAction(%d)", value);
+	return true;
+}
+int InputCountDefinitionAction(const int input_size){
+	LogDebug("InputCountDefinitionAction(%d)", input_size);
+	return true;
+}	
+int ConnectionBlockDefinitionAction(const int arrow){
+	LogDebug("ConnectionBlockDefinitionAction(%d)", arrow);
+	return true;
+}
+int SingleIdentifierArrowAction(const char* identifier, const int arrow){
+	LogDebug("SingleIdentifierArrowAction(%s, %d)", identifier, arrow);
+	return true;
+}	
+int GroupIdentifierArrowAction(const int gruop, const int arrow){
+	LogDebug("GroupIdentifierArrowAction(%d, %d)", gruop, arrow);
+	return true;
+}
+int OutputEndArrowAction(){
+	LogDebug("OutputEndArrowAction()");
+	return true;
+}
+int IdentifierEndArrowAction(const char* identifier, const int newLineArrow){
+	LogDebug("IdentifierEndArrowAction(%s, %d)", identifier, newLineArrow);
+	return true;
+}
+int GroupeIdentifierEndArrowAction(const int gruop,const int newLineArrow){
+	LogDebug("GroupeIdentifierEndArrowAction(%d, %d)", gruop, newLineArrow);
+	return true;
+}
+int InputNewLineArrowAction(const int arrow){
+	LogDebug("InputNewLineArrowAction(%d)", arrow);
+	return true;
+}
+int IdentifierNewLineArrowAction(const char* identifier, const int arrow){
+	LogDebug("IdentifierNewLineArrowAction(%s, %d)", identifier, arrow);
+	return true;
+}
+int GroupIdentifierNewLineArrowAction(const int gruop,const int arrow){
+	LogDebug("GroupIdentifierNewLineArrowAction(%d, %d)", gruop, arrow);
+	return true;
+}
+int GroupDefinitionAction(const char* identifier, const int gruopAux){
+	LogDebug("GroupDefinitionAction(%s, %d)", identifier, gruopAux);
+	return true;
+}
+int GroupLastIdentifierAction(const char* identifier){
+	LogDebug("ProcessorAdditionAction(%s)", identifier);
+	return true;
 }

@@ -14,7 +14,7 @@
 %option yylineno
 
 /* Contextos de Flex. */
-%x BLOCK_COMMENT
+%x BLOCK_COMMENT    
 %x INLINE_COMMENT
 
 /* Patrones reutilizables. */

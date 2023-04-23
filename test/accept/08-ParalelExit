@@ -1,0 +1,23 @@
+PROC A1 {
+    aux = and($0, $1);
+    aux2 = or(aux, $2);
+    aux3 = and(aux2, $3);
+    #0 = xnor(aux, aux3);
+    #1 = not(aux2);
+};
+
+PROC A2 {
+    aux = or($0, $1);
+    aux2 = and($3, $2);
+    #0 = xor(aux, aux2);
+};
+
+proc b {
+    aux = XNOR($0, $1);
+    aux2 = NOT($2);
+    #0 = AND(aux, aux2);
+};
+
+INPUT (4);
+INPUT -> {A1, A2} -> {A3,A4};
+A3 -> OUTPUT;

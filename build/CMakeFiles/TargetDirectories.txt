@@ -1,0 +1,3 @@
+/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build/CMakeFiles/Compiler.dir
+/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build/CMakeFiles/edit_cache.dir
+/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build/CMakeFiles/rebuild_cache.dir

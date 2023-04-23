@@ -1,0 +1,7 @@
+proc A {
+    #0 = OR($0, $1);
+};
+
+INPUT (3);
+
+INPUT -> A -> OUTPUT;

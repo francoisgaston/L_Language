@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/main.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/main.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/main.c",
+  "output": "CMakeFiles/Compiler.dir/src/main.c.o"
+},
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/backend/code-generation/generator.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/backend/code-generation/generator.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/backend/code-generation/generator.c",
+  "output": "CMakeFiles/Compiler.dir/src/backend/code-generation/generator.c.o"
+},
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/backend/domain-specific/calculator.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/backend/domain-specific/calculator.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/backend/domain-specific/calculator.c",
+  "output": "CMakeFiles/Compiler.dir/src/backend/domain-specific/calculator.c.o"
+},
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/backend/support/logger.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/backend/support/logger.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/backend/support/logger.c",
+  "output": "CMakeFiles/Compiler.dir/src/backend/support/logger.c.o"
+},
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/frontend/lexical-analysis/flex-actions.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/lexical-analysis/flex-actions.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/lexical-analysis/flex-actions.c",
+  "output": "CMakeFiles/Compiler.dir/src/frontend/lexical-analysis/flex-actions.c.o"
+},
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/frontend/lexical-analysis/flex-scanner.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/lexical-analysis/flex-scanner.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/lexical-analysis/flex-scanner.c",
+  "output": "CMakeFiles/Compiler.dir/src/frontend/lexical-analysis/flex-scanner.c.o"
+},
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/frontend/syntactic-analysis/bison-actions.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/syntactic-analysis/bison-actions.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/syntactic-analysis/bison-actions.c",
+  "output": "CMakeFiles/Compiler.dir/src/frontend/syntactic-analysis/bison-actions.c.o"
+},
+{
+  "directory": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/build",
+  "command": "/usr/bin/gcc-12   -g -static-libgcc -std=gnu99 -O3 -o CMakeFiles/Compiler.dir/src/frontend/syntactic-analysis/bison-parser.c.o -c /home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/syntactic-analysis/bison-parser.c",
+  "file": "/home/gaston/Escritorio/ITBA/TLA/TP/TPE_TLA/src/frontend/syntactic-analysis/bison-parser.c",
+  "output": "CMakeFiles/Compiler.dir/src/frontend/syntactic-analysis/bison-parser.c.o"
+}
+]

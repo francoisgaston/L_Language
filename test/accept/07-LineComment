@@ -1,3 +1,10 @@
+proc A {
+    aux = AND($0, $1);
+    //Esto es un comentario
+    #0 = OR(aux, $2);
+};
 // Esto es un comentario de linea
 // INPUT (3);
+INPUT (4);
 // INPUT -> A -> B -> C -> OUTPUT;
+INPUT -> A -> OUTPUT;
