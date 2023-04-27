@@ -138,7 +138,7 @@ token HashSignPatternAction(const char * lexeme) {
 
 token VariableIdentifierPatternAction(const char * lexeme, const int length) {
     LogDebug("VariableIdentifierPatternAction: '%s' (length = %d).", lexeme, length);
-    yylval.identifier = lexeme;
+    yylval.token = IDENTIFIER;
     return IDENTIFIER;
 }
 

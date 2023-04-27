@@ -101,8 +101,8 @@ int ConnectionDefinitionAction(const int input, const int conection){
 	return true;
 }
 
-int ProcessorDefinitionAction(const char* identifier,const int block){
-	LogDebug("ProcessorDefinitionAction(%s,%d)",identifier, block);
+int ProcessorDefinitionAction(const int identifier,const int block){
+	LogDebug("ProcessorDefinitionAction(%d,%d)",identifier, block);
 	return true;
 }
 int MultiLineBlockDefinitionAction(const int line,const int block){
@@ -113,8 +113,8 @@ int SingleLineBlockDefinitionAction(const int line){
 	LogDebug("SingleLineBlockDefinitionAction(%d)", line);
 	return true;
 }
-int LocalVariableAssignmentAction(const char* var,const int value){
-	LogDebug("LocalVariableAssignmentAction(%s, %d)", var, value);
+int LocalVariableAssignmentAction(const int var,const int value){
+	LogDebug("LocalVariableAssignmentAction(%d, %d)", var, value);
 	return true;
 }
 int ExitVariableAssignmentAction(const int exit_var,const int value){
@@ -133,8 +133,8 @@ int UnaryOperationAction(const int unary_op, const int arg){
 	LogDebug("UnaryOperationAction(%d, %d)", unary_op, arg);
 	return true;
 }
-int IdentifierArgumentAction(const char* identifier){
-	LogDebug("IdentifierArgumentAction(%s)", identifier);
+int IdentifierArgumentAction(const int identifier){
+	LogDebug("IdentifierArgumentAction(%d)", identifier);
 	return true;
 }
 int InputVariableArgumentAction(const int input_number){
@@ -153,8 +153,8 @@ int ConnectionBlockDefinitionAction(const int arrow){
 	LogDebug("ConnectionBlockDefinitionAction(%d)", arrow);
 	return true;
 }
-int SingleIdentifierArrowAction(const char* identifier, const int arrow){
-	LogDebug("SingleIdentifierArrowAction(%s, %d)", identifier, arrow);
+int SingleIdentifierArrowAction(const int identifier, const int arrow){
+	LogDebug("SingleIdentifierArrowAction(%d, %d)", identifier, arrow);
 	return true;
 }	
 int GroupIdentifierArrowAction(const int gruop, const int arrow){
@@ -165,8 +165,8 @@ int OutputEndArrowAction(){
 	LogDebug("OutputEndArrowAction()");
 	return true;
 }
-int IdentifierEndArrowAction(const char* identifier, const int newLineArrow){
-	LogDebug("IdentifierEndArrowAction(%s, %d)", identifier, newLineArrow);
+int IdentifierEndArrowAction(const int identifier, const int newLineArrow){
+	LogDebug("IdentifierEndArrowAction(%d, %d)", identifier, newLineArrow);
 	return true;
 }
 int GroupeIdentifierEndArrowAction(const int gruop,const int newLineArrow){
@@ -177,19 +177,19 @@ int InputNewLineArrowAction(const int arrow){
 	LogDebug("InputNewLineArrowAction(%d)", arrow);
 	return true;
 }
-int IdentifierNewLineArrowAction(const char* identifier, const int arrow){
-	LogDebug("IdentifierNewLineArrowAction(%s, %d)", identifier, arrow);
+int IdentifierNewLineArrowAction(const int identifier, const int arrow){
+	LogDebug("IdentifierNewLineArrowAction(%d, %d)", identifier, arrow);
 	return true;
 }
 int GroupIdentifierNewLineArrowAction(const int gruop,const int arrow){
 	LogDebug("GroupIdentifierNewLineArrowAction(%d, %d)", gruop, arrow);
 	return true;
 }
-int GroupDefinitionAction(const char* identifier, const int gruopAux){
-	LogDebug("GroupDefinitionAction(%s, %d)", identifier, gruopAux);
+int GroupDefinitionAction(const int identifier, const int gruopAux){
+	LogDebug("GroupDefinitionAction(%d, %d)", identifier, gruopAux);
 	return true;
 }
-int GroupLastIdentifierAction(const char* identifier){
-	LogDebug("ProcessorAdditionAction(%s)", identifier);
+int GroupLastIdentifierAction(const int identifier){
+	LogDebug("ProcessorAdditionAction(%d)", identifier);
 	return true;
 }

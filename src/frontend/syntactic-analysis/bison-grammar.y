@@ -33,7 +33,6 @@
 
 	// Terminales.
 	token token;
-	const char* identifier;
 	int integer;
 }
 
@@ -63,7 +62,7 @@
 %token <token> DOLLAR_SIGN
 %token <token> HASH_SIGN
 
-%token <identifier> IDENTIFIER
+%token <token> IDENTIFIER
 %token <integer> INTEGER
 
 // Tipos de dato para los no-terminales generados desde Bison.
