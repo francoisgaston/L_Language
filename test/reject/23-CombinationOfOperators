@@ -1,0 +1,6 @@
+proc A {
+    aux = AND($0, NOT($1));
+    #0 = OR(aux, $2);
+};
+
+INPUT -> A -> OUTPUT;

@@ -1,4 +1,4 @@
-proc A {
+proc A1 {
     aux = AND($0, $1);
     aux2 = NOT($3);
     //esto es un comentario

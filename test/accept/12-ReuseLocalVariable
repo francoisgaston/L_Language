@@ -1,8 +1,6 @@
 proc A {
     aux = AND($0, $1);
-    aux2 = NOT($3);
-    //esto es un comentario
-
+    aux2 = XOR(aux,aux);
     #0 = OR(aux, $2);
 };
 

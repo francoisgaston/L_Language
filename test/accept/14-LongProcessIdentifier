@@ -1,4 +1,4 @@
-proc A {
+proc BUENAS_TARDES_COMO_ESTAS {
     aux = AND($0, $1);
     aux2 = NOT($3);
     //esto es un comentario
@@ -8,4 +8,4 @@ proc A {
 
 INPUT (3);
 
-INPUT -> A -> OUTPUT;
+INPUT -> BUENAS_TARDES_COMO_ESTAS -> OUTPUT;

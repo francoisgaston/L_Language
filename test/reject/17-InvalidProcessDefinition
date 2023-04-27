@@ -1,8 +1,7 @@
 proc A {
+    Esto no deberia ser aceptado
     aux = AND($0, $1);
     aux2 = NOT($3);
-    //esto es un comentario
-
     #0 = OR(aux, $2);
 };
 

@@ -8,4 +8,4 @@ proc A {
 
 INPUT (3);
 
-INPUT -> A -> OUTPUT;
+INPUT -> A -> OUTPUT -> aux;

@@ -9,7 +9,7 @@ obj/
 node_modules/
 .idea/
 cmake-build-debug/
-
+.bash_history
 # Files:
 *.csproj.user
 *~
