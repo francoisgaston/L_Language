@@ -9,7 +9,7 @@ CompilerState state;
 // Punto de entrada principal del compilador.
 const int main(const int argumentCount, const char ** arguments) {
 	// Inicializar estado de la aplicación.
-	state.program = NULL;
+	state.program_node = NULL;
 	state.succeed = false;
 
 	// Mostrar parámetros recibidos por consola.

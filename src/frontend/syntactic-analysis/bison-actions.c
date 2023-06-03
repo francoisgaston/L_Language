@@ -3,6 +3,8 @@
 #include "bison-actions.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
 
 /**
  * Implementación de "bison-grammar.h".
@@ -28,8 +30,8 @@ void yyerror(const char * string) {
 * indica que efectivamente el programa de entrada se pudo generar con esta
 * gramática, o lo que es lo mismo, que el programa pertenece al lenguaje.
 */
-int ProgramGrammarAction(const int value) {
-	LogDebug("\tProgramGrammarAction(%d)", value);
+int ProgramGrammarAction(const program_node* program_node) {
+	LogDebug("\tProgramGrammarAction(%p)", program_node);
 	/*
 	* "state" es una variable global que almacena el estado del compilador,
 	* cuyo campo "succeed" indica si la compilación fue o no exitosa, la cual
@@ -43,8 +45,8 @@ int ProgramGrammarAction(const int value) {
 	* la expresión se computa on-the-fly, y es la razón por la cual esta
 	* variable es un simple entero, en lugar de un nodo.
 	*/
-	// state.result = value;
-	return value;
+	state.program_node = program_node;
+	return 0;
 }
 
 // int AdditionExpressionGrammarAction(const int leftValue, const int rightValue) {
@@ -91,105 +93,215 @@ int ProgramGrammarAction(const int value) {
 
 //NOSOTROS
 
-int ProcessorAdditionAction(const int proc, const int program){
-	LogDebug("\tProcessorAdditionAction(%d, %d)", proc, program);
-	return true;
+program_node* ProcessorAdditionAction(const processor_node * proc, const program_node * program){
+	LogDebug("\tProcessorAdditionAction(%p,%p)", proc, program);
+	program_node* ans = (program_node*) calloc(1,sizeof(program_node));
+	ans->program_node_type = processor_node_type;
+	ans->processor_node = proc;
+	ans-> program_node = program;
+	return ans;
 }
 
-int ConnectionDefinitionAction(const int input, const int conection){
-	LogDebug("\tConnectionDefinitionAction(%d, %d)", input, conection);
-	return true;
+program_node * ConnectionDefinitionAction(const input_node* input, const connection_node* conection){
+	LogDebug("\tConnectionDefinitionAction(%p, %p)", input, conection);
+	program_node* ans = (program_node*) calloc(1,sizeof(program_node));
+	ans->program_node_type = connection_node_type;
+	ans->connection_node = conection;
+	ans-> input_node = input;
+	return ans;	
 }
 
-int ProcessorDefinitionAction(const int identifier,const int block){
-	LogDebug("ProcessorDefinitionAction(%d,%d)",identifier, block);
-	return true;
+processor_node * ProcessorDefinitionAction(const text_t identifier,const block_node* block_node){
+	LogDebug("ProcessorDefinitionAction(%p,%p)",identifier, block_node);
+	processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
+	ans->block_node = block_node;
+	ans->identifier = identifier;
+	return ans;
 }
-int MultiLineBlockDefinitionAction(const int line,const int block){
-	LogDebug("MultiLineBlockDefinitionAction(%d, %d)", line, block);
-	return true;
+block_node * MultiLineBlockDefinitionAction(const line_node* line_node,const block_node* block){
+	LogDebug("MultiLineBlockDefinitionAction(%p, %p)", line_node, block);
+	block_node* ans = (block_node*) calloc(1,sizeof(block_node));
+	ans->block_node_type = multi_line_block_type;
+	ans->line_node = line_node;
+	ans->block_node = block;
+	return ans;
 }
-int SingleLineBlockDefinitionAction(const int line){
-	LogDebug("SingleLineBlockDefinitionAction(%d)", line);
-	return true;
+block_node * SingleLineBlockDefinitionAction(const line_node * line){
+	LogDebug("SingleLineBlockDefinitionAction(%p)", line);
+	block_node* ans = (block_node*) calloc(1,sizeof(block_node));
+	ans->block_node_type = single_line_block_type;
+	ans->line_node = line;
+	return ans;
 }
-int LocalVariableAssignmentAction(const int var,const int value){
-	LogDebug("LocalVariableAssignmentAction(%d, %d)", var, value);
-	return true;
+line_node * LocalVariableAssignmentAction(const text_t identifier,const operator_node* operator){
+	LogDebug("LocalVariableAssignmentAction(%p, %p)", identifier, operator);
+	line_node* ans = (line_node*) calloc(1,sizeof(line_node));
+	ans->line_node_type = local_assigment_type;
+	ans->identifier = identifier;
+	ans->operator_node = operator;
+	return ans;
 }
-int ExitVariableAssignmentAction(const int exit_var,const int value){
-	LogDebug("ExitVariableAssignmentAction(%d, %d)", exit_var, value);
-	return true;
+line_node * ExitVariableAssignmentAction(const exit_var_node* exit_var_node,const operator_node* operator){
+	LogDebug("ExitVariableAssignmentAction(%p, %p)", exit_var_node, operator);
+	line_node* ans = (line_node*) calloc(1,sizeof(line_node));
+	ans->line_node_type = exit_assigment_type;
+	ans->operator_node = operator;
+	ans->exit_var_node = exit_var_node;
+	return ans;
 }
-int ExitVariableDefinitionAction(const int exit_var_number){
+exit_var_node * ExitVariableDefinitionAction(const number_t exit_var_number){
 	LogDebug("ExitVariableDefinitionAction(%d)", exit_var_number);
-	return true;
+	exit_var_node* ans = (exit_var_node*) calloc(1,sizeof(exit_var_node));
+	ans->exit_var_index = exit_var_number;
+	return ans;
 }
-int BinaryOperationAction(const int binary_op, const int arg1, const int arg2){
-	LogDebug("BinaryOperationAction(%d, %d, %d)", binary_op, arg1, arg2);
-	return true;
+
+operator_node * BinaryOperationAction(const binary_operator_t binary_op, const argument_node * arg1, const argument_node * arg2) {
+	LogDebug("BinaryOperationAction(%s, %p, %p)", binary_op.op, arg1, arg2);
+	if(binary_op.type == UNDEF_OP) {
+		LogError("UnknownBinaryOperator: %s", binary_op.op);
+	}
+	operator_node * op_node = (operator_node *) calloc(1, sizeof(operator_node));
+	op_node->operator_node_type = binary_operator_type;
+	op_node->binary_operator = binary_op;
+	op_node->argument_node_1 = arg1;
+	op_node->argument_node_2 = arg2;
+	return op_node;
 }
-int UnaryOperationAction(const int unary_op, const int arg){
-	LogDebug("UnaryOperationAction(%d, %d)", unary_op, arg);
-	return true;
+
+operator_node * UnaryOperationAction(const unary_operator_t unary_op, const argument_node * arg) {
+	LogDebug("UnaryOperationAction(%s, %p)", unary_op.op, arg);
+	if(unary_op.type == UNDEF_OP) {
+		LogError("UnknownUnaryOperator: %s", unary_op.op);
+	}
+	operator_node * op_node = (operator_node *) calloc(1, sizeof(operator_node));
+	op_node->operator_node_type = unary_operator_type;
+	op_node->unary_operator = unary_op;
+	op_node->argument_node_1 = arg;
+	return op_node;
 }
-int IdentifierArgumentAction(const int identifier){
-	LogDebug("IdentifierArgumentAction(%d)", identifier);
-	return true;
+
+argument_node * IdentifierArgumentAction(const text_t identifier){
+	LogDebug("IdentifierArgumentAction(%p)", identifier);
+	argument_node* ans = (argument_node*) calloc(1,sizeof(argument_node));
+	ans->argument_node_type = identifier_argument_type;
+	ans->identifier = identifier;
+	return ans;
 }
-int InputVariableArgumentAction(const int input_number){
+
+argument_node * InputVariableArgumentAction(const number_t input_number) {
 	LogDebug("InputVariableArgumentAction(%d)", input_number);
-	return true;
+	input_variable_node * iv_node = (input_variable_node *) calloc(1, sizeof(input_variable_node));
+	argument_node * a_node = (argument_node *) calloc(1, sizeof(argument_node));
+	iv_node->input_variable = input_number;
+	a_node->input_variable_node = iv_node;
+	return a_node;
 }
-int ConstantArgumentAction(const int value){
-	LogDebug("ConstantArgumentAction(%d)", value);
-	return true;
+
+argument_node * ConstantArgumentAction(const boolean_t value){
+	LogDebug("ConstantArgumentAction(%d)", value.value);
+	argument_node* ans = (argument_node*) calloc(1,sizeof(argument_node));
+	ans->argument_node_type = constant_argument_type;
+	ans->constant_value = value;
+	return ans;
 }
-int InputCountDefinitionAction(const int input_size){
-	LogDebug("InputCountDefinitionAction(%d)", input_size);
-	return true;
+
+input_node * InputCountDefinitionAction(const number_t input_size){
+	LogDebug("InputCountDefinitionAction(%d)", input_size.n);
+	input_node* ans = (input_node*) calloc(1,sizeof(input_node));
+	ans->integer = input_size;
+	return ans;
+}
+
+connection_node * ConnectionBlockDefinitionAction(const arrow_node * arrow) {
+	LogDebug("ConnectionBlockDefinitionAction(%p)", arrow);
+	connection_node * node = (connection_node *) calloc(1, sizeof(connection_node));
+	node->arrow_node = arrow;
+	return node;
+}
+
+arrow_node * SingleIdentifierArrowAction(const text_t identifier, const arrow_node * arrow) {
+	LogDebug("SingleIdentifierArrowAction(%s, %p)", identifier.text, arrow);
+	arrow_node * a_node = (arrow_node *) calloc(1, sizeof(arrow_node));
+	a_node->identifier = identifier;
+	a_node->arrow_node = arrow;
+	a_node->arrow_node_type = single_identifier_type;
+	return a_node;
 }	
-int ConnectionBlockDefinitionAction(const int arrow){
-	LogDebug("ConnectionBlockDefinitionAction(%d)", arrow);
-	return true;
+
+arrow_node * GroupIdentifierArrowAction(const group_node * group, const arrow_node * arrow) {
+	LogDebug("GroupIdentifierArrowAction(%p, %p)", group, arrow);
+	arrow_node * a_node = (arrow_node *) calloc(1, sizeof(arrow_node));
+	a_node->arrow_node = arrow;
+	a_node->group_node = group;
+	a_node->arrow_node_type = group_identifier_type;
+	return a_node;
 }
-int SingleIdentifierArrowAction(const int identifier, const int arrow){
-	LogDebug("SingleIdentifierArrowAction(%d, %d)", identifier, arrow);
-	return true;
-}	
-int GroupIdentifierArrowAction(const int gruop, const int arrow){
-	LogDebug("GroupIdentifierArrowAction(%d, %d)", gruop, arrow);
-	return true;
-}
-int OutputEndArrowAction(){
+
+arrow_node * OutputEndArrowAction() {
 	LogDebug("OutputEndArrowAction()");
-	return true;
+	arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
+	node->arrow_node_type = output_identifier_type;
+	return node;
 }
-int IdentifierEndArrowAction(const int identifier, const int newLineArrow){
-	LogDebug("IdentifierEndArrowAction(%d, %d)", identifier, newLineArrow);
-	return true;
+
+arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_arrow_node * newLineArrow) {
+	LogDebug("IdentifierEndArrowAction(%s, %p)", identifier.text, newLineArrow);
+	arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
+	node->identifier = identifier;
+	node->new_line_arrow_node = newLineArrow;
+	node->arrow_node_type = identifier_end_type;
+	return node;
 }
-int GroupeIdentifierEndArrowAction(const int gruop,const int newLineArrow){
-	LogDebug("GroupeIdentifierEndArrowAction(%d, %d)", gruop, newLineArrow);
-	return true;
+arrow_node * GroupIdentifierEndArrowAction(const group_node * group,const new_line_arrow_node * newLineArrow){
+	LogDebug("GroupeIdentifierEndArrowAction(%p, %p)", group, newLineArrow);
+	arrow_node * arrow = (arrow_node*) calloc(1, sizeof(arrow_node));
+	arrow->arrow_node_type = group_identifier_end_type;
+	arrow->new_line_arrow_node = newLineArrow;
+	arrow->group_node= group;
+	return arrow;
 }
-int InputNewLineArrowAction(const int arrow){
-	LogDebug("InputNewLineArrowAction(%d)", arrow);
-	return true;
+new_line_arrow_node * InputNewLineArrowAction(const arrow_node * arrow){
+	LogDebug("InputNewLineArrowAction(%p)", arrow);
+	new_line_arrow_node * new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node*));
+	new_line_arrow->new_line_arrow_node_type = input_new_line_type;
+	new_line_arrow->arrow_node = arrow;
+	return new_line_arrow;
 }
-int IdentifierNewLineArrowAction(const int identifier, const int arrow){
-	LogDebug("IdentifierNewLineArrowAction(%d, %d)", identifier, arrow);
-	return true;
+new_line_arrow_node * IdentifierNewLineArrowAction(const text_t identifier, const arrow_node * arrow){
+	LogDebug("IdentifierNewLineArrowAction(%p, %p)", identifier, arrow);
+	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node*));
+	new_line_arrow->new_line_arrow_node_type = input_argument_type;
+	new_line_arrow->identifier = identifier;
+	new_line_arrow->arrow_node = arrow;
+	return new_line_arrow;
 }
-int GroupIdentifierNewLineArrowAction(const int gruop,const int arrow){
-	LogDebug("GroupIdentifierNewLineArrowAction(%d, %d)", gruop, arrow);
-	return true;
+new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_node * group,const arrow_node * arrow){
+	LogDebug("GroupIdentifierNewLineArrowAction(%p, %p)", group, arrow);
+	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node));
+	new_line_arrow->new_line_arrow_node_type = group_identifier_new_line_type;
+	new_line_arrow->group_node=group;
+	new_line_arrow->arrow_node=arrow;
+	return new_line_arrow;
 }
-int GroupDefinitionAction(const int identifier, const int gruopAux){
-	LogDebug("GroupDefinitionAction(%d, %d)", identifier, gruopAux);
-	return true;
+group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
+	LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
+	group_node * group = (group_node*) calloc(1, sizeof(group_node));
+	group->identifier = identifier;
+	group->group_aux_node = groupAux;
+	return group;
 }
-int GroupLastIdentifierAction(const int identifier){
-	LogDebug("ProcessorAdditionAction(%d)", identifier);
-	return true;
+group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
+	group_aux_node * group_aux = (group_aux_node*) calloc(1, sizeof(group_aux_node));
+	group_aux->group_aux_node_type = last_group_aux_type;
+	group_aux->group_aux_node = groupAux;
+	group_aux->identifier = identifier;
+	return group_aux;
+}
+group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier){
+	LogDebug("ProcessorAdditionAction(%p)", identifier);
+	group_aux_node* group_aux = (group_aux_node*) calloc(1, sizeof(group_aux_node));
+	group_aux->group_aux_node_type = common_group_aux_type;
+	group_aux->identifier = identifier;
+	return group_aux;
 }

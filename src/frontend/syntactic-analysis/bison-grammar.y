@@ -17,23 +17,27 @@
 
 	// No-terminales (frontend).
 	int start_grammar;
-	int program;
-	int input;
-	int proc;
-	int block;
-	int line;
-	int exit_var;
-	int operator;
-	int argument;
-	int connection;
-	int arrow;
-	int new_line_arrow;
-	int group;
-	int group_aux;
+	program_node * program;
+	input_node* input;
+	processor_node* proc;
+	block_node * block;
+	line_node * line;
+	exit_var_node * exit_var;
+	operator_node * operator;
+	argument_node * argument;
+	connection_node * connection;
+	arrow_node * arrow;
+	new_line_arrow_node * new_line_arrow;
+	group_node * group;
+	group_aux_node * group_aux;
 
 	// Terminales.
 	token token;
-	int integer;
+	boolean_t boolean;
+	unary_operator_t unary_operator;
+	binary_operator_t binary_operator;
+	text_t identifier;
+	number_t number;
 }
 
 // IDs y tipos de los tokens terminales generados desde Flex.
@@ -42,11 +46,11 @@
 %token <token> INPUT
 %token <token> OUTPUT
 
-%token <token> TRUE
-%token <token> FALSE
+%token <boolean> TRUE
+%token <boolean> FALSE
 
-%token <token> UNARY_OP
-%token <token> BINARY_OP
+%token <unary_operator> UNARY_OP
+%token <binary_operator> BINARY_OP
 %token <token> ASSIGNMENT_OP
 %token <token> ARROW_OP
 
@@ -62,8 +66,8 @@
 %token <token> DOLLAR_SIGN
 %token <token> HASH_SIGN
 
-%token <token> IDENTIFIER
-%token <integer> INTEGER
+%token <identifier> IDENTIFIER
+%token <number> INTEGER
 
 // Tipos de dato para los no-terminales generados desde Bison.
 %type <start_grammar> start_grammar
@@ -133,7 +137,7 @@ arrow: ARROW_OP IDENTIFIER arrow  										{ $$ = SingleIdentifierArrowAction($
 	| ARROW_OP OPEN_BRACES group CLOSE_BRACES arrow 					{ $$ = GroupIdentifierArrowAction($3,$5);}
 	| ARROW_OP OUTPUT SEMICOLON											{ $$ = OutputEndArrowAction();}
 	| ARROW_OP IDENTIFIER SEMICOLON new_line_arrow						{ $$ = IdentifierEndArrowAction($2,$4);}
-	| ARROW_OP OPEN_BRACES group CLOSE_BRACES SEMICOLON new_line_arrow	{ $$ = GroupeIdentifierEndArrowAction($3,$6);}
+	| ARROW_OP OPEN_BRACES group CLOSE_BRACES SEMICOLON new_line_arrow	{ $$ = GroupIdentifierEndArrowAction($3,$6);}
 	;
 
 new_line_arrow: INPUT arrow 					{ $$ = InputNewLineArrowAction($2); }
@@ -144,8 +148,8 @@ new_line_arrow: INPUT arrow 					{ $$ = InputNewLineArrowAction($2); }
 group: IDENTIFIER COMMA group_aux				{ $$ = GroupDefinitionAction($1, $3);}
 	;
 
-group_aux: IDENTIFIER COMMA group_aux			{ $$ = GroupDefinitionAction($1, $3);}
-	| IDENTIFIER								{ $$ = GroupLastIdentifierAction($1);}
+group_aux: IDENTIFIER COMMA group_aux			{ $$ = GroupAuxDefinitionAction($1, $3);}
+	| IDENTIFIER								{ $$ = GroupAuxLastIdentifierAction($1);}
 	;
 
 

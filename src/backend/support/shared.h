@@ -29,14 +29,7 @@ extern int yylex(void);
 // Función global del analizador sintáctico Bison.
 extern int yyparse(void);
 
-// Emular tipo "boolean".
-typedef enum {
-	false = 0,
-	true = 1
-} boolean;
 
-// El tipo de los tokens emitidos por Flex.
-typedef int token;
 
 // Estado global de toda la aplicación.
 typedef struct {
@@ -48,7 +41,7 @@ typedef struct {
 	// int result;
 
 	// El nodo raíz del AST (se usará cuando se implemente el backend).
-	Program * program;
+	const program_node * program_node;
 
 	// Agregar lo que sea necesario para el compilador.
 	// Agregar una pila para manipular scopes.

@@ -12,7 +12,7 @@
  */
 
 // Programa.
-int ProgramGrammarAction(const int value);
+int ProgramGrammarAction(const program_node* program_node);
 
 // // Expresión.
 // int AdditionExpressionGrammarAction(const int leftValue, const int rightValue);
@@ -30,30 +30,30 @@ int ProgramGrammarAction(const int value);
 
 
 //NOSOTROS
-int ProcessorAdditionAction(const int proc, const int program);
-int ConnectionDefinitionAction(const int input, const int conection);
-int ProcessorDefinitionAction(const int identifier,const int block);
-int MultiLineBlockDefinitionAction(const int line,const int block);
-int SingleLineBlockDefinitionAction(const int line);
-int LocalVariableAssignmentAction(const int var,const int value);
-int ExitVariableAssignmentAction(const int exit_var,const int value);
-int ExitVariableDefinitionAction(const int exit_var_number);
-int BinaryOperationAction(const int binary_op, const int arg1, const int arg2);
-int UnaryOperationAction(const int unary_op, const int arg);
-int IdentifierArgumentAction(const int identifier);
-int InputVariableArgumentAction(const int input_number);
-int ConstantArgumentAction(const int value);
-int InputCountDefinitionAction(const int input_size);
-int ConnectionBlockDefinitionAction(const int arrow);
-int SingleIdentifierArrowAction(const int identifier, const int arrow);
-int GroupIdentifierArrowAction(const int gruop, const int arrow);
-int OutputEndArrowAction();
-int IdentifierEndArrowAction(const int identifier, const int newLineArrow);
-int GroupeIdentifierEndArrowAction(const int gruop,const int newLineArrow);
-int InputNewLineArrowAction(const int arrow);
-int GroupDefinitionAction(const int identifier, const int gruopAux);
-int IdentifierNewLineArrowAction(const int identifier, const int arrow);
-int GroupIdentifierNewLineArrowAction(const int gruop,const int arrow);
-int GroupDefinitionAction(const int identifier, const int gruopAux);
-int GroupLastIdentifierAction(const int identifier);
+program_node * ProcessorAdditionAction(const processor_node * proc, const program_node * program);
+program_node * ConnectionDefinitionAction(const input_node* input, const connection_node* conection);
+processor_node * ProcessorDefinitionAction(const text_t identifier,const block_node* block_node);
+block_node * MultiLineBlockDefinitionAction(const line_node* line_node,const block_node* block);
+block_node * SingleLineBlockDefinitionAction(const line_node * line);
+line_node * LocalVariableAssignmentAction(const text_t identifier,const operator_node* operator);
+line_node * ExitVariableAssignmentAction(const exit_var_node* exit_var_node,const operator_node* operator);
+exit_var_node * ExitVariableDefinitionAction(const number_t exit_var_number);
+operator_node * BinaryOperationAction(const binary_operator_t binary_op, const argument_node * arg1, const argument_node * arg2);
+operator_node * UnaryOperationAction(const unary_operator_t unary_op, const argument_node * arg);
+argument_node * IdentifierArgumentAction(const text_t identifier);
+argument_node * InputVariableArgumentAction(const number_t input_number);
+argument_node * ConstantArgumentAction(const boolean_t value);
+input_node * InputCountDefinitionAction(const number_t input_size);
+connection_node * ConnectionBlockDefinitionAction(const arrow_node * arrow);
+arrow_node * SingleIdentifierArrowAction(const text_t identifier, const arrow_node * arrow);
+arrow_node * GroupIdentifierArrowAction(const group_node * group, const arrow_node * arrow);
+arrow_node * OutputEndArrowAction();
+arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_arrow_node * newLineArrow);
+arrow_node * GroupIdentifierEndArrowAction(const group_node * group,const new_line_arrow_node * newLineArrow);
+new_line_arrow_node * InputNewLineArrowAction(const arrow_node * arrow);
+new_line_arrow_node * IdentifierNewLineArrowAction(const text_t identifier, const arrow_node * arrow);
+new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_node * group,const arrow_node * arrow);
+group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node * groupAux);
+group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_aux_node * groupAux);
+group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier);
 #endif

@@ -34,38 +34,25 @@ whitespace		[ \f\n\r\t\v]
 <INLINE_COMMENT>.                           { ; }
 <INLINE_COMMENT>{endline}                   { EndInlineCommentPatternAction(); BEGIN(INITIAL); }
 
-"proc" |
-"PROC"                                      { return ProcessorPatternAction(yytext); }
+(?i:PROC)                                   { return ProcessorPatternAction(yytext); }
 
-"input" |
-"INPUT"                                     { return InputPatternAction(yytext); }
+(?i:INPUT)                                  { return InputPatternAction(yytext); }
 
-"output" |
-"OUTPUT"                                    { return OutputPatternAction(yytext); }
+(?i:OUTPUT)                                 { return OutputPatternAction(yytext); }
 
-"true" |
-"TRUE"                                      { return TruePatternAction(yytext); }
+(?i:TRUE)                                   { return TruePatternAction(yytext); }
 
-"false" |
-"FALSE"                                     { return FalsePatternAction(yytext); }
+(?i:FALSE)                                  { return FalsePatternAction(yytext); }
 
-"not" |
-"NOT" |
-"buff" |
-"BUFF"                                      { return UnaryOperatorPatternAction(yytext); }
+(?i:NOT) |
+(?i:BUFF)                                   { return UnaryOperatorPatternAction(yytext, yyleng); }
 
-"and" |
-"AND" |
-"nand" |
-"NAND" |
-"or" |
-"OR" |
-"nor" |
-"NOR" |
-"xor" |
-"XOR" |
-"xnor" |
-"XNOR"                                      { return BinaryOperatorPatternAction(yytext); }
+(?i:AND) |
+(?i:NAND) |
+(?i:OR) |
+(?i:NOR) |
+(?i:XOR) |
+(?i:XNOR)                                   { return BinaryOperatorPatternAction(yytext, yyleng); }
 
 "="                                         { return AssignmentOperatorPatternAction(yytext); }
 

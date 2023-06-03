@@ -46,10 +46,10 @@ token TruePatternAction(const char * lexeme);
 token FalsePatternAction(const char * lexeme);
 
 // Se ejecuta al analizar un operador unario (NOT/not, BUFF/buff)
-token UnaryOperatorPatternAction(const char * lexeme);
+token UnaryOperatorPatternAction(const char * lexeme, const int length);
 
 // Se ejecuta al analizar un operador binario (AND/and, OR/or, NAND/nand, NOR/nor, XOR/xor, XNOR/xnor)
-token BinaryOperatorPatternAction(const char * lexeme);
+token BinaryOperatorPatternAction(const char * lexeme, const int length);
 
 // Se ejecuta al analizar el token "="
 token AssignmentOperatorPatternAction(const char * lexeme);

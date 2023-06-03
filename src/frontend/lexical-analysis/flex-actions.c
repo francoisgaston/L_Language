@@ -1,6 +1,34 @@
 #include "../../backend/support/logger.h"
 #include "flex-actions.h"
 #include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+
+binary_operator getBinaryOperator(const char * str, const int length) {
+    if(strncasecmp(str, AND, length)) {
+        return AND_OP;
+    } else if (strncasecmp(str, OR, length)) {
+        return OR_OP;
+    } else if (strncasecmp(str, XOR, length)) {
+        return XOR_OP;
+    } else if (strncasecmp(str, NAND, length)) {
+        return NAND_OP;
+    } else if (strncasecmp(str, NOR, length)) {
+        return NOR_OP;
+    } else if (strncasecmp(str, XNOR, length)) {
+        return XNOR_OP;
+    }
+    return UNDEF_OP;
+}
+
+unary_operator getUnaryOperator(const char * str, const int length) {
+    if(strncasecmp(str, NOT, length)) {
+        return NOT_OP;
+    } else if (strncasecmp(str, BUFF, length)) {
+        return BUFF_OP;
+    }
+    return UNDEF_OP;
+}
 
 /**
  * Implementación de "flex-actions.h".
@@ -54,25 +82,31 @@ token OutputPatternAction(const char * lexeme) {
 
 token TruePatternAction(const char * lexeme) {
     LogDebug("TruePatternAction: '%s'.", lexeme);
-    yylval.token = TRUE;
+    yylval.boolean.value = true;
     return TRUE;
 }
 
 token FalsePatternAction(const char * lexeme) {
     LogDebug("FalsePatternAction: '%s'.", lexeme);
-    yylval.token = FALSE;
+    yylval.boolean.value = false;
     return FALSE;
 }
 
-token UnaryOperatorPatternAction(const char * lexeme) {
+token UnaryOperatorPatternAction(const char * lexeme, const int length) {
     LogDebug("UnaryOperatorPatternAction: '%s'.", lexeme);
-    yylval.token = UNARY_OP;
+    char * text = (char *) calloc(length + 1, sizeof(char));
+    strncpy(text, lexeme, length);
+    yylval.unary_operator.op = text;
+    yylval.unary_operator.type = getUnaryOperator(text, length);
     return UNARY_OP;
 }
 
-token BinaryOperatorPatternAction(const char * lexeme) {
+token BinaryOperatorPatternAction(const char * lexeme, const int length) {
     LogDebug("BinaryOperatorPatternAction: '%s'.", lexeme);
-    yylval.token = BINARY_OP;
+    char * text = (char *) calloc(length + 1, sizeof(char));
+    strncpy(text, lexeme, length);
+    yylval.binary_operator.op = text;
+    yylval.binary_operator.type = getBinaryOperator(text, length);
     return BINARY_OP;
 }
 
@@ -138,13 +172,18 @@ token HashSignPatternAction(const char * lexeme) {
 
 token VariableIdentifierPatternAction(const char * lexeme, const int length) {
     LogDebug("VariableIdentifierPatternAction: '%s' (length = %d).", lexeme, length);
-    yylval.token = IDENTIFIER;
+    char * text = (char *) calloc(length + 1, sizeof(char));
+    strncpy(text, lexeme, length);
+    yylval.identifier.text = text;
     return IDENTIFIER;
 }
 
 token IntegerPatternAction(const char * lexeme, const int length) {
     LogDebug("IntegerPatternAction: '%s' (length = %d).", lexeme, length);
-    yylval.integer = atoi(lexeme);
+    char * text = (char *) calloc(length + 1, sizeof(char));
+    strncpy(text, lexeme, length);
+    yylval.number.n = (unsigned int) strtoul(text, NULL, 10);
+    free(text);
     return INTEGER;
 }
 
