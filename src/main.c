@@ -2,6 +2,8 @@
 #include "backend/support/shared.h"
 #include "frontend/syntactic-analysis/bison-parser.h"
 #include <stdio.h>
+#include "backend/code-generation/generator.h"
+
 
 // Estado de la aplicación.
 CompilerState state;
@@ -19,12 +21,15 @@ const int main(const int argumentCount, const char ** arguments) {
 
 	// Compilar el programa de entrada.
 	LogInfo("Compilando...\n");
+	//Generar la tabla de symbolos
 	const int result = yyparse();
 	switch (result) {
 		case 0:
 			// La variable "succeed" es la que setea Bison al identificar el símbolo
 			// inicial de la gramática satisfactoriamente.
 			if (state.succeed) {
+				//Funcion para llamar al back y el generate code
+				generatorCode(state.program_node);
 				LogInfo("La compilacion fue exitosa.");
 			}
 			else {

@@ -113,6 +113,7 @@ program_node * ConnectionDefinitionAction(const input_node* input, const connect
 
 processor_node * ProcessorDefinitionAction(const text_t identifier,const block_node* block_node){
 	LogDebug("ProcessorDefinitionAction(%p,%p)",identifier, block_node);
+	//Generar y check de la variable en la tabla
 	processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
 	ans->block_node = block_node;
 	ans->identifier = identifier;
@@ -191,10 +192,9 @@ argument_node * IdentifierArgumentAction(const text_t identifier){
 
 argument_node * InputVariableArgumentAction(const number_t input_number) {
 	LogDebug("InputVariableArgumentAction(%d)", input_number);
-	input_variable_node * iv_node = (input_variable_node *) calloc(1, sizeof(input_variable_node));
 	argument_node * a_node = (argument_node *) calloc(1, sizeof(argument_node));
-	iv_node->input_variable = input_number;
-	a_node->input_variable_node = iv_node;
+	a_node->argument_node_type = input_argument_type;
+	a_node->input_variable = input_number;
 	return a_node;
 }
 

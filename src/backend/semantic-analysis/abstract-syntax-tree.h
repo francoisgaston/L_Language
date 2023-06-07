@@ -10,6 +10,8 @@
 #define NOT "NOT"
 #define BUFF "BUFF"
 #define UNDEF_OP -1
+#define TRUE_TEXT "true"
+#define FALSE_TEXT "false"
 
 // Emular tipo "booleanean".
 typedef enum {
@@ -36,6 +38,7 @@ typedef int token;
 
 typedef struct {
 	boolean value;
+	char * text;
 } boolean_t;
 
 typedef struct {
@@ -50,6 +53,7 @@ typedef struct {
 
 typedef struct {
 	unsigned int n;
+	char * text;
 } number_t;
 
 typedef struct {
@@ -166,13 +170,9 @@ struct operator_node{
 
 struct argument_node{
 	argument_node_type argument_node_type;
-	const input_variable_node* input_variable_node;
+	number_t input_variable;
 	boolean_t constant_value;
 	text_t identifier;
-};
-
-struct input_variable_node{
-	number_t input_variable;
 };
 
 struct input_node{

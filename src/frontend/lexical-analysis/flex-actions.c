@@ -83,12 +83,14 @@ token OutputPatternAction(const char * lexeme) {
 token TruePatternAction(const char * lexeme) {
     LogDebug("TruePatternAction: '%s'.", lexeme);
     yylval.boolean.value = true;
+    yylval.boolean.text = TRUE_TEXT;
     return TRUE;
 }
 
 token FalsePatternAction(const char * lexeme) {
     LogDebug("FalsePatternAction: '%s'.", lexeme);
     yylval.boolean.value = false;
+    yylval.boolean.text = FALSE_TEXT;
     return FALSE;
 }
 
@@ -183,7 +185,7 @@ token IntegerPatternAction(const char * lexeme, const int length) {
     char * text = (char *) calloc(length + 1, sizeof(char));
     strncpy(text, lexeme, length);
     yylval.number.n = (unsigned int) strtoul(text, NULL, 10);
-    free(text);
+    yylval.number.text = text;
     return INTEGER;
 }
 
