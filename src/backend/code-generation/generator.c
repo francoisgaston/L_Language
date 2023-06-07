@@ -26,9 +26,9 @@ static void generateArgumentNode(const argument_node* argument_node);
 static void generateInputNode(const input_node* input_node);
 static void generateConnectionNode(const connection_node* connection_node);
 static void generateArrowNode(const arrow_node* arrow_node,char* var);
-static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_noded);
-static void generateGroupNode(const group_node* group_node);
-static void generateGroupAuxNode(const group_aux_node* group_aux_node);
+static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var);
+static void generateGroupNode(const group_node* group_node, char* var);
+static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_node, char* var);
 
 char* strToupper(char* str);
 
@@ -58,6 +58,7 @@ void printError(char * err) {
 }
 
 void generatorCode(const program_node * program_node){
+	LogDebug("Entre a generatorCode");
 	output_info = output_init("./salida.py", "w+");
 	exec_template(output_info);
 	new_line(output_info);
@@ -65,6 +66,7 @@ void generatorCode(const program_node * program_node){
 }
 
 static void generateProgramNode(const program_node * program_node){
+	LogDebug("Entre a generateProgramNode");
 	switch (program_node->program_node_type){
 		case processor_node_type:
 			generateProcessorNode(program_node->processor_node);
@@ -81,19 +83,22 @@ static void generateProgramNode(const program_node * program_node){
 }
 
 static void generateProcessorNode(const processor_node* processor_node){
+	LogDebug("Entre a generateProcessorNode");
 	//Definicion de la funcion para el procesador
 	output("def proc_");
 	output(processor_node->identifier.text);
 	output("(input):");
 	add_tab(output_info);
 	new_line(output_info);
-	output_LF("out = [1024]");
+	output_LF("out = [False]*1024");
 	generateBlockNode(processor_node->block_node);
-	output("return out");
-	reduce_tab(output_info);
+	output_RTAB_LF("return out");
+	new_line(output_info);
+	reset_tab(output_info);
 }
 
 static void generateBlockNode(const block_node* block_node){
+	LogDebug("Entre a generateBlockNode");
 	switch (block_node->block_node_type) {
 		case multi_line_block_type:
 			generateLineNode(block_node->line_node);
@@ -109,6 +114,7 @@ static void generateBlockNode(const block_node* block_node){
 }
 
 static void generateLineNode(const line_node* line_node){
+	LogDebug("Entre a generateLineNode");
 	switch (line_node->line_node_type){
 		case local_assigment_type:
 			output(line_node->identifier.text);
@@ -127,12 +133,14 @@ static void generateLineNode(const line_node* line_node){
 }
 
 static void generateExitVarNode(const exit_var_node* exit_var_node){
+	LogDebug("Entre a generateExitVarNode");
 	output("out[");
 	output(exit_var_node->exit_var_index.text);
 	output("]");
 }
 
 static void generateOperatorNode(const operator_node* operator_node){
+	LogDebug("Entre a generateOperatorNode");
 	char * aux;
 	switch (operator_node->operator_node_type)
 	{
@@ -164,6 +172,7 @@ static void generateOperatorNode(const operator_node* operator_node){
 }
 
 static void generateArgumentNode(const argument_node* argument_node){
+	LogDebug("Entre a generateArgumentNode");
 	switch(argument_node->argument_node_type) {
 		case identifier_argument_type:
 			output(argument_node->identifier.text);
@@ -174,7 +183,11 @@ static void generateArgumentNode(const argument_node* argument_node){
 			output("]");
 			break;
 		case constant_argument_type:
-			output(argument_node->constant_value.text);
+			if(argument_node->constant_value.value){
+				output("True");
+			}else{
+				output("False");
+			}
 			break;
 		default:
 			printError("Invalid argument_node");
@@ -184,11 +197,12 @@ static void generateArgumentNode(const argument_node* argument_node){
 
 
 static void generateInputNode(const input_node* input_node){
+	LogDebug("Entre a generateInputNode");
 	reset_tab(output_info);
 	new_line(output_info);
 	output_ATAB_LF("if __name__ == '__main__':");
-	output_LF("read_file = open(sys.argv[1], 'r');");
-	output_LF("write_file = open(sys.argv[2], 'w');");
+	output_LF("read_file = open(sys.argv[1], 'r')");
+	output_LF("write_file = open(sys.argv[2], 'w')");
 	output_LF("csvreader = csv.reader(read_file)");
 	output_LF("csvwriter = csv.writer(write_file)");
 	output_ATAB_LF("for row in csvreader:");
@@ -199,32 +213,41 @@ static void generateInputNode(const input_node* input_node){
 	output("if(len(input) > ");
 	output(input_node->integer.text);
 	output_ATAB_LF("): ");
+	output("print('Too many bits in the array, must be ");
+	output(input_node->integer.text);
+	output_LF("')");
+	output_RTAB_LF("exit(1)");
+	output("elif(len(input) < ");
+	output(input_node->integer.text);
+	output_ATAB_LF("): ");
+	output("print('Missing bits in the array, must be ");
+	output(input_node->integer.text);
+	output_LF("')");
 	output_RTAB_LF("exit(1)");
 	output_LF("output = main_proc(input)");
-	output_LF("input_str = ''");
-	output_ATAB_LF("for bit in input:");
-	output_RTAB_LF("input_str += str(bit)");
-	output_LF("output_str = ''");
-	output_ATAB_LF("for bit in output:");
-	output_RTAB_LF("output_str += str(bit)");
+	output_LF("input_str = bitarr_to_str(input)");
+	output_LF("output_str = bitarr_to_str(output)");
 	output_LF("csvwriter.writerow([input_str, output_str])");
 	reduce_tab(output_info);
 
 }
 
 static void generateConnectionNode(const connection_node* connection_node){
+	LogDebug("Entre a generateConnectionNode");
 	reset_tab(output_info);
 	new_line(output_info);
 	new_line(output_info);
 	output_ATAB_LF("def main_proc(input):");
-	output_LF("output = [1024]");
+	output_LF("output = [False]*1024");
 	generateArrowNode(connection_node->arrow_node,"input");
 }
 
 static void generateArrowNode(const arrow_node* arrow_node, char * var){
+	LogDebug("Entre a generateArrowNode");
 	switch (arrow_node->arrow_node_type)
 	{
 	case single_identifier_type:
+		LogDebug("Entre en single_identifier_type");
 		output("output = proc_");
 		output(arrow_node->identifier.text);
 		output("(");
@@ -233,18 +256,21 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 		generateArrowNode(arrow_node->arrow_node, "output");
 		break;
 	case group_identifier_type:
+		LogDebug("Entre en grup_identifier_type");
 		output("output = ");
-		generateGroupNode(arrow_node->group_node);
+		generateGroupNode(arrow_node->group_node,var);
 		generateArrowNode(arrow_node->arrow_node, "output");
 		break;
 	case output_identifier_type:
+		LogDebug("Entre en output_identifier_type");
 		output_LF("return output");
 		break;
 	case identifier_end_type:
+		LogDebug("Entre en identifier_end_type");
 		output("aux_");
 		output(arrow_node->identifier.text);
 		output(" = output");
-		generateNewLineArrowNode(arrow_node->new_line_arrow_node);
+		generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
 		break;
 	case group_identifier_end_type:
 		//ESTADO INVALIDO?
@@ -254,18 +280,22 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 	}
 }
 
-static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_node){
+static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_node, char* var){
+	LogDebug("Entre a generateNewLineArrowNode");
 	switch (new_line_arrow_node->new_line_arrow_node_type)
 	{
 	case input_new_line_type:
+		LogDebug("Entre en input_new_line_type");
 		generateArrowNode(new_line_arrow_node->arrow_node, "input");
 		break;
 	case single_identifier_new_line_type:
+		LogDebug("Entre en single_identifier_new_line_type");
 		generateArrowNode(new_line_arrow_node->arrow_node, new_line_arrow_node->identifier.text);
 		break;
 	case group_identifier_new_line_type:
+		LogDebug("Entre en group_identifier_new_line_type");
 		output("output = ");
-		generateGroupNode(new_line_arrow_node->group_node);
+		generateGroupNode(new_line_arrow_node->group_node,var);
 		generateArrowNode(new_line_arrow_node->arrow_node, "output");
 		break;
 	default:
@@ -273,22 +303,36 @@ static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_n
 	}
 }
 
-static void generateGroupNode(const group_node* group_node){
-	output("Union(");
-	generateGroupAuxNode(group_node->group_aux_node);
+static void generateGroupNode(const group_node* group_node, char* var){
+	LogDebug("Entre en generateGroupNode");
+	output("union(");
+	output("proc_");
+	output(group_node->identifier.text);
+	output("(");	
+	output(var);
+	output("), ");
+	generateGroupAuxNode(group_node->group_aux_node,var);
 }
 
-static void generateGroupAuxNode(const group_aux_node* group_aux_node){
+static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var){
 	switch(group_aux_node->group_aux_node_type){
 		case last_group_aux_type:
+			LogDebug("Entre en last_group_aux_type");
+			output("proc_");
 			output(group_aux_node->identifier.text);
-			output("(output)");
+			output("(");	
+			output(var);
 			output(")");
+			output_LF(")");
 			break;
 		case common_group_aux_type:
+			LogDebug("Entre en common_group_aux_type");
+			output("proc_");
 			output(group_aux_node->identifier.text);
-			output("(output), ");	
-			generateGroupAuxNode(group_aux_node);
+			output("(");	
+			output(var);
+			output("), ");
+			generateGroupAuxNode(group_aux_node, var);
 			break;
 		default:
 			printError("Invalid argument_node");

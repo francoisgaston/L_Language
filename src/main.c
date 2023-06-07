@@ -29,8 +29,8 @@ const int main(const int argumentCount, const char ** arguments) {
 			// inicial de la gramática satisfactoriamente.
 			if (state.succeed) {
 				//Funcion para llamar al back y el generate code
-				generatorCode(state.program_node);
 				LogInfo("La compilacion fue exitosa.");
+				generatorCode(state.program_node);
 			}
 			else {
 				LogError("Se produjo un error en la aplicacion.");

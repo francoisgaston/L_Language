@@ -293,7 +293,7 @@ group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node
 }
 group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
 	group_aux_node * group_aux = (group_aux_node*) calloc(1, sizeof(group_aux_node));
-	group_aux->group_aux_node_type = last_group_aux_type;
+	group_aux->group_aux_node_type = common_group_aux_type;
 	group_aux->group_aux_node = groupAux;
 	group_aux->identifier = identifier;
 	return group_aux;
@@ -301,7 +301,7 @@ group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_a
 group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier){
 	LogDebug("ProcessorAdditionAction(%p)", identifier);
 	group_aux_node* group_aux = (group_aux_node*) calloc(1, sizeof(group_aux_node));
-	group_aux->group_aux_node_type = common_group_aux_type;
+	group_aux->group_aux_node_type = last_group_aux_type;
 	group_aux->identifier = identifier;
 	return group_aux;
 }

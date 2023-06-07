@@ -10,8 +10,8 @@
 #define NOT "NOT"
 #define BUFF "BUFF"
 #define UNDEF_OP -1
-#define TRUE_TEXT "true"
-#define FALSE_TEXT "false"
+#define TRUE_TEXT "True"
+#define FALSE_TEXT "False"
 
 // Emular tipo "booleanean".
 typedef enum {

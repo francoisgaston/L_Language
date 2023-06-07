@@ -11,6 +11,7 @@
 #define XNOR_PY "def XNOR(a, b):\n\treturn int(not (XOR(a, b)))"
 #define BUFF_PY "def BUFF(a):\n\treturn a"
 #define BITARR_TO_STR_PY "def bitarr_to_str(bitarr):\n\taux = ''\n\tfor bit in bitarr:\n\t\taux += str(bit)\n\treturn aux"
+#define UNION_PY "def union(* arrays):\n\tout = []\n\tfor array in arrays:\n\t\tfor elem in array:\n\t\t\tout.append(elem)\n\treturn out"
 
 static void print_double_LF(outputADT out);
 static char * get_imports();
@@ -23,6 +24,7 @@ static char * get_nor();
 static char * get_xnor();
 static char * get_buff();
 static char * get_bitarr_to_str();
+static char * get_union();
 
 static char * (*template_funcs [])(void) = {
     get_imports,
@@ -30,9 +32,11 @@ static char * (*template_funcs [])(void) = {
     get_or,
     get_xor,
     get_not,
+    get_nand,
     get_xnor,
     get_buff,
     get_bitarr_to_str,
+    get_union,
     NULL
 };
 
@@ -85,4 +89,8 @@ static char * get_buff() {
 
 static char * get_bitarr_to_str() {
     return BITARR_TO_STR_PY;
+}
+
+static char * get_union() {
+    return UNION_PY;
 }
