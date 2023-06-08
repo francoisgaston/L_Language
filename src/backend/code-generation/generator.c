@@ -4,7 +4,6 @@
 #include "template.h"
 #include <string.h>
 #include <ctype.h>
-
 // #define CODE_TEMPLATE "import csv\nimport sys\n\ndef AND(a, b):\n\treturn a & b\n\ndef OR(a, b):\n\treturn a | b\n\ndef NOT(a):\n\treturn int(not a)\n\ndef XOR(a, b):\n\treturn int(bool(a) ^ bool(b))\n\ndef NAND(a, b):\n\treturn int(not (a & b))\n\ndef NOR(a, b):\n\treturn int(not (a | b))\n\ndef bitarr_to_str(bitarr):\n\taux = ''\n\tfor bit in bitarr:\n\t\taux += str(bit)\n\treturn aux\n\n"
 
 /**
@@ -267,9 +266,8 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 		break;
 	case identifier_end_type:
 		LogDebug("Entre en identifier_end_type");
-		output("aux_");
 		output(arrow_node->identifier.text);
-		output(" = output");
+		output_LF(" = output");
 		generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
 		break;
 	case group_identifier_end_type:

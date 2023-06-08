@@ -27,3 +27,5 @@ input -> A -> aux_a;
 aux_a -> B1 -> aux_b1;
 aux_a -> B2 -> aux_b2;
 { aux_b1, aux_b2 } -> output;
+
+
