@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define MAX_STATES 3
-#define CHUNK 10
+#define CHUNK 20
 #define INITIAL_SCOPE 0
 
 typedef struct{

@@ -34,7 +34,7 @@ void write_output(outputADT out, const char * str){
     //for(int i=0; i!=out->tab_count; i++){
     //    fprintf(out->program, "\t");
     //}
-    fprintf(out->program, str);
+    fprintf(out->program, "%s", str);
 }
 
 void new_line(outputADT out){
