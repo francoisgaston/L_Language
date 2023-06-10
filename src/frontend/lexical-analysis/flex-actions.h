@@ -69,6 +69,12 @@ token OpenBracesPatternAction(const char * lexeme);
 // Se ejecuta al analizar el token "}"
 token CloseBracesPatternAction(const char * lexeme);
 
+// Se ejecuta al analizar el token "["
+token OpenBracketPatternAction(const char * lexeme);
+
+// Se ejecuta al analizar el token "]"
+token CloseBracketPatternAction(const char * lexeme);
+
 // Se ejecuta al analizar el token ","
 token CommaPatternAction(const char * lexeme);
 

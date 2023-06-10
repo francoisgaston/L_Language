@@ -62,6 +62,9 @@
 %token <token> OPEN_BRACES
 %token <token> CLOSE_BRACES
 
+%token <token> OPEN_BRACKET
+%token <token> CLOSE_BRACKET
+
 %token <token> COMMA
 %token <token> SEMICOLON
 
@@ -141,12 +144,12 @@ arrow: ARROW_OP IDENTIFIER arrow  										{ $$ = SingleIdentifierArrowAction($
 	| ARROW_OP OPEN_BRACES group CLOSE_BRACES arrow 					{ $$ = GroupIdentifierArrowAction($3,$5);}
 	| ARROW_OP OUTPUT SEMICOLON											{ $$ = OutputEndArrowAction();}
 	| ARROW_OP IDENTIFIER SEMICOLON new_line_arrow						{ $$ = IdentifierEndArrowAction($2,$4);}
-	| ARROW_OP OPEN_BRACES group_var CLOSE_BRACES SEMICOLON new_line_arrow	{ $$ = GroupIdentifierEndArrowAction($3,$6);}
+	| ARROW_OP OPEN_BRACKET group_var CLOSE_BRACKET SEMICOLON new_line_arrow	{ $$ = GroupIdentifierEndArrowAction($3,$6);}
 	;
 
-new_line_arrow: INPUT arrow 					{ $$ = InputNewLineArrowAction($2); }
-	| IDENTIFIER arrow							{ $$ = IdentifierNewLineArrowAction($1, $2);}
-	| OPEN_BRACES group_var CLOSE_BRACES arrow		{ $$ = GroupIdentifierNewLineArrowAction($2,$4);}
+new_line_arrow: INPUT arrow 					                        { $$ = InputNewLineArrowAction($2); }
+	| IDENTIFIER arrow							                        { $$ = IdentifierNewLineArrowAction($1, $2);}
+	| OPEN_BRACKET group_var CLOSE_BRACKET arrow		                { $$ = GroupIdentifierNewLineArrowAction($2,$4);}
 	;
 
 group_var: IDENTIFIER COMMA group_aux_var       {$$ = GroupDefinitionVariablesAction($1, $3);}

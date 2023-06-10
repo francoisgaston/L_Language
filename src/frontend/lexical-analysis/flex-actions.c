@@ -152,6 +152,20 @@ token CloseBracesPatternAction(const char * lexeme) {
     return CLOSE_BRACES;
 }
 
+token OpenBracketPatternAction(const char * lexeme) {
+    LogDebug("CloseBracesPatternAction: '%s'.", lexeme);
+    yylval.token = CLOSE_BRACKET;
+    remove_scope();
+    return CLOSE_BRACES;
+}
+
+token CloseBracketPatternAction(const char * lexeme) {
+    LogDebug("CloseBracesPatternAction: '%s'.", lexeme);
+    yylval.token = OPEN_BRACKET;
+    remove_scope();
+    return CLOSE_BRACES;
+}
+
 token CommaPatternAction(const char * lexeme) {
     LogDebug("CommaPatternAction: '%s'.", lexeme);
     yylval.token = COMMA;
