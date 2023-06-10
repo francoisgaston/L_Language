@@ -11,6 +11,7 @@ typedef struct{
     char * name;
     int scope;
     int columns;
+    bool is_proc;
 } variable_info;
 
 typedef struct{
@@ -27,9 +28,13 @@ void init_symbol_table();
 
 void destroy_symbol_table();
 
-bool add_variable_symbol_table(char * name, int value);
+void add_variable_symbol_table(char * name, int value);
+
+void add_proc_symbol_table(char * name, int value);
 
 bool exists_variable_symbol_table(char * name);
+
+bool exists_proc_symbol_table(char * name);
 
 void create_scope();
 

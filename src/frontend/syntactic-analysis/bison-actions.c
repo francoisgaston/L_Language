@@ -114,12 +114,12 @@ program_node * ConnectionDefinitionAction(const input_node* input, const connect
 processor_node * ProcessorDefinitionAction(const text_t identifier,const block_node* block_node){
 	LogDebug("ProcessorDefinitionAction(%p,%p)",identifier, block_node);
 	//Generar y check de la variable en la tabla
-	processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
-    if(exists_variable_symbol_table(identifier.text)){
-        LogError("Not memory available\n");
+    if(exists_proc_symbol_table(identifier.text)){
+        LogError("Variable %s ya fue inicializada\n", identifier.text);
         exit(1);
     }
-    add_variable_symbol_table(identifier.text, 10);
+    add_proc_symbol_table(identifier.text, 10);
+    processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
 	ans->block_node = block_node;
 	ans->identifier = identifier;
 	return ans;
@@ -141,12 +141,12 @@ block_node * SingleLineBlockDefinitionAction(const line_node * line){
 }
 line_node * LocalVariableAssignmentAction(const text_t identifier,const operator_node* operator){
 	LogDebug("LocalVariableAssignmentAction(%p, %p)", identifier, operator);
-	line_node* ans = (line_node*) calloc(1,sizeof(line_node));
     if(exists_variable_symbol_table(identifier.text)){
-        LogError("Not memory available\n");
+        LogError("Variable %s ya fue inicializada\n", identifier.text);
         exit(1);
     }
     add_variable_symbol_table(identifier.text, 10);
+    line_node* ans = (line_node*) calloc(1,sizeof(line_node));
 	ans->line_node_type = local_assigment_type;
 	ans->identifier = identifier;
 	ans->operator_node = operator;
@@ -232,6 +232,10 @@ connection_node * ConnectionBlockDefinitionAction(const arrow_node * arrow) {
 
 arrow_node * SingleIdentifierArrowAction(const text_t identifier, const arrow_node * arrow) {
 	LogDebug("SingleIdentifierArrowAction(%s, %p)", identifier.text, arrow);
+    if(!exists_proc_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado\n", identifier.text);
+        exit(1);
+    }
 	arrow_node * a_node = (arrow_node *) calloc(1, sizeof(arrow_node));
 	a_node->identifier = identifier;
 	a_node->arrow_node = arrow;
@@ -257,12 +261,12 @@ arrow_node * OutputEndArrowAction() {
 
 arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_arrow_node * newLineArrow) {
 	LogDebug("IdentifierEndArrowAction(%s, %p)", identifier.text, newLineArrow);
-	arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
     if(exists_variable_symbol_table(identifier.text)){
-        LogError("Not memory available\n");
+        LogError("Variable %s ya fue declarada\n", identifier.text);
         exit(1);
     }
     add_variable_symbol_table(identifier.text, 10);
+    arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
 	node->identifier = identifier;
 	node->new_line_arrow_node = newLineArrow;
 	node->arrow_node_type = identifier_end_type;
@@ -285,6 +289,10 @@ new_line_arrow_node * InputNewLineArrowAction(const arrow_node * arrow){
 }
 new_line_arrow_node * IdentifierNewLineArrowAction(const text_t identifier, const arrow_node * arrow){
 	LogDebug("IdentifierNewLineArrowAction(%p, %p)", identifier, arrow);
+    if(!exists_variable_symbol_table(identifier.text)){
+        LogError("Variable %s no inicializada\n", identifier.text);
+        exit(1);
+    }
 	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node*));
 	new_line_arrow->new_line_arrow_node_type = input_argument_type;
 	new_line_arrow->identifier = identifier;
@@ -302,6 +310,10 @@ new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_node * group
 group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
 	LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
 	group_node * group = (group_node*) calloc(1, sizeof(group_node));
+    if(!exists_proc_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado\n", identifier.text);
+        exit(1);
+    }
 	group->identifier = identifier;
 	group->group_aux_node = groupAux;
 	return group;

@@ -7,6 +7,9 @@
 
 static symbol_table* symbol_table_info;
 
+void add_data_table_symbol(char *name, int columns, bool is_proc);
+
+
 void init_symbol_table(){
     symbol_table_info = malloc(sizeof(symbol_table));
     if(symbol_table_info == NULL){
@@ -34,26 +37,12 @@ void destroy_symbol_table(){
     free(symbol_table);
 }
 
-bool add_variable_symbol_table(char * name, int value) {
-    if(symbol_table_info->variables_count == symbol_table_info->array_lenght){
-        symbol_table_info->array_lenght+=CHUNK;
-        symbol_table_info->variables_array = realloc(symbol_table_info->variables_array, symbol_table_info->array_lenght);
-    }
-    symbol_table_info->variables_array[symbol_table_info->variables_count] = malloc(sizeof(variable_info));
-    if(symbol_table_info->variables_array[symbol_table_info->variables_count] == NULL){
-        LogError("Not memory available\n");
-        destroy_symbol_table();
-        exit(1);
-    }
-    symbol_table_info->variables_array[symbol_table_info->variables_count]->name= name;
-    symbol_table_info->variables_array[symbol_table_info->variables_count]->columns=value;
-    symbol_table_info->variables_array[symbol_table_info->variables_count]->scope=symbol_table_info->scopes[symbol_table_info->index_scope];
-    symbol_table_info->variables_count++;
-    for(int i=0; i<symbol_table_info->variables_count; i++){
-        printf("nombre: %s:\n", symbol_table_info->variables_array[i]->name);
-        printf("scope: %d\n\n\n", symbol_table_info->variables_array[i]->scope);
-    }
-    return true;
+void add_variable_symbol_table(char * name, int column) {
+    add_data_table_symbol(name, column, false);
+}
+
+void add_proc_symbol_table(char * name, int columns){
+    add_data_table_symbol(name, columns, true);
 }
 
 void create_scope(){
@@ -71,10 +60,46 @@ void remove_scope(){
 
 bool exists_variable_symbol_table(char * name){
     for(int i=0; i<symbol_table_info->variables_count; i++){
-        if(symbol_table_info->scopes[symbol_table_info->index_scope] == symbol_table_info->variables_array[i]->scope
+        if(!symbol_table_info->variables_array[i]->is_proc &&symbol_table_info->scopes[symbol_table_info->index_scope] == symbol_table_info->variables_array[i]->scope
            && strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
             return true;
         }
     }
     return false;
 }
+
+bool exists_proc_symbol_table(char * name){
+    for(int i=0; i<symbol_table_info->variables_count; i++){
+        if(symbol_table_info->variables_array[i]->is_proc && symbol_table_info->scopes[symbol_table_info->index_scope] == symbol_table_info->variables_array[i]->scope
+           && strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
+            return true;
+        }
+    }
+    return false;
+}
+
+void add_data_table_symbol(char *name, int columns, bool is_proc){
+    if(symbol_table_info->variables_count == symbol_table_info->array_lenght){
+        symbol_table_info->array_lenght+=CHUNK;
+        symbol_table_info->variables_array = realloc(symbol_table_info->variables_array, symbol_table_info->array_lenght);
+    }
+    symbol_table_info->variables_array[symbol_table_info->variables_count] = malloc(sizeof(variable_info));
+    if(symbol_table_info->variables_array[symbol_table_info->variables_count] == NULL){
+        LogError("Not memory available\n");
+        destroy_symbol_table();
+        exit(1);
+    }
+    symbol_table_info->variables_array[symbol_table_info->variables_count]->name= name;
+    symbol_table_info->variables_array[symbol_table_info->variables_count]->columns=columns;
+    symbol_table_info->variables_array[symbol_table_info->variables_count]->is_proc = is_proc;
+    symbol_table_info->variables_array[symbol_table_info->variables_count]->scope=symbol_table_info->scopes[symbol_table_info->index_scope];
+    symbol_table_info->variables_count++;
+
+
+    for(int i=0; i<symbol_table_info->variables_count; i++){
+        printf("nombre: %s:\n", symbol_table_info->variables_array[i]->name);
+        printf("scope: %d\n\n\n", symbol_table_info->variables_array[i]->scope);
+    }
+}
+
+
