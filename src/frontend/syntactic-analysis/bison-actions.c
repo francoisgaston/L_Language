@@ -272,12 +272,12 @@ arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_ar
 	node->arrow_node_type = identifier_end_type;
 	return node;
 }
-arrow_node * GroupIdentifierEndArrowAction(const group_node * group,const new_line_arrow_node * newLineArrow){
+arrow_node * GroupIdentifierEndArrowAction(const group_var_node * group,const new_line_arrow_node * newLineArrow){
 	LogDebug("GroupeIdentifierEndArrowAction(%p, %p)", group, newLineArrow);
 	arrow_node * arrow = (arrow_node*) calloc(1, sizeof(arrow_node));
 	arrow->arrow_node_type = group_identifier_end_type;
 	arrow->new_line_arrow_node = newLineArrow;
-	arrow->group_node= group;
+	arrow->group_var_node= group;
 	return arrow;
 }
 new_line_arrow_node * InputNewLineArrowAction(const arrow_node * arrow){
@@ -299,14 +299,40 @@ new_line_arrow_node * IdentifierNewLineArrowAction(const text_t identifier, cons
 	new_line_arrow->arrow_node = arrow;
 	return new_line_arrow;
 }
-new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_node * group,const arrow_node * arrow){
+new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_var_node * group,const arrow_node * arrow){
 	LogDebug("GroupIdentifierNewLineArrowAction(%p, %p)", group, arrow);
 	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node));
 	new_line_arrow->new_line_arrow_node_type = group_identifier_new_line_type;
-	new_line_arrow->group_node=group;
+	new_line_arrow->group_var_node=group;
 	new_line_arrow->arrow_node=arrow;
 	return new_line_arrow;
 }
+group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
+    LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
+    group_var_node * group = (group_var_node*) calloc(1, sizeof(group_var_node));
+    if(!exists_proc_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado\n", identifier.text);
+        exit(1);
+    }
+    group->identifier = identifier;
+    group->group_aux_node = groupAux;
+    return group;
+}
+group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
+    group_aux_var_node * group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
+    group_aux->group_aux_node_type = common_group_aux_type;
+    group_aux->group_aux_node = groupAux;
+    group_aux->identifier = identifier;
+    return group_aux;
+}
+group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier){
+    LogDebug("ProcessorAdditionAction(%p)", identifier);
+    group_aux_var_node* group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
+    group_aux->group_aux_node_type = last_group_aux_type;
+    group_aux->identifier = identifier;
+    return group_aux;
+}
+
 group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
 	LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
 	group_node * group = (group_node*) calloc(1, sizeof(group_node));

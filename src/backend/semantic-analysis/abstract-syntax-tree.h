@@ -78,6 +78,8 @@ typedef struct arrow_node arrow_node;
 typedef struct new_line_arrow_node new_line_arrow_node;
 typedef struct group_aux_node group_aux_node;
 typedef struct group_node group_node;
+typedef struct group_aux_var_node group_aux_var_node;
+typedef struct group_var_node group_var_node;
 
 
 //Type of nodes
@@ -188,6 +190,7 @@ struct arrow_node{
 	text_t identifier;
 	const arrow_node* arrow_node;
 	const group_node* group_node;
+    const group_var_node* group_var_node;
 	const new_line_arrow_node* new_line_arrow_node;
 };
 
@@ -196,6 +199,7 @@ struct new_line_arrow_node{
 	const arrow_node* arrow_node;
 	text_t identifier;
 	const group_node* group_node;
+    const group_var_node * group_var_node;
 };
 
 struct group_node{
@@ -207,6 +211,17 @@ struct group_aux_node{
 	group_aux_node_type group_aux_node_type;
 	text_t identifier;
 	const group_aux_node* group_aux_node;
+};
+
+struct group_var_node{
+    text_t identifier;
+    const group_aux_var_node* group_aux_node;
+};
+
+struct group_aux_var_node{
+    group_aux_node_type group_aux_node_type;
+    text_t identifier;
+    const group_aux_var_node* group_aux_node;
 };
 
 

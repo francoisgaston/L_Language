@@ -49,11 +49,14 @@ arrow_node * SingleIdentifierArrowAction(const text_t identifier, const arrow_no
 arrow_node * GroupIdentifierArrowAction(const group_node * group, const arrow_node * arrow);
 arrow_node * OutputEndArrowAction();
 arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_arrow_node * newLineArrow);
-arrow_node * GroupIdentifierEndArrowAction(const group_node * group,const new_line_arrow_node * newLineArrow);
+arrow_node * GroupIdentifierEndArrowAction(const group_var_node * group,const new_line_arrow_node * newLineArrow);
 new_line_arrow_node * InputNewLineArrowAction(const arrow_node * arrow);
 new_line_arrow_node * IdentifierNewLineArrowAction(const text_t identifier, const arrow_node * arrow);
-new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_node * group,const arrow_node * arrow);
+new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_var_node * group,const arrow_node * arrow);
 group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node * groupAux);
 group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_aux_node * groupAux);
 group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier);
+group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux);
+group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux);
+group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier);
 #endif

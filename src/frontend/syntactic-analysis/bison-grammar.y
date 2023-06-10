@@ -30,6 +30,8 @@
 	new_line_arrow_node * new_line_arrow;
 	group_node * group;
 	group_aux_node * group_aux;
+	group_var_node * group_var;
+	group_aux_var_node * group_aux_var;
 
 	// Terminales.
 	token token;
@@ -84,6 +86,8 @@
 %type <new_line_arrow> new_line_arrow
 %type <group> group
 %type <group_aux> group_aux
+%type <group_aux_var> group_aux_var
+%type <group_var> group_var
 
 
 
@@ -137,12 +141,19 @@ arrow: ARROW_OP IDENTIFIER arrow  										{ $$ = SingleIdentifierArrowAction($
 	| ARROW_OP OPEN_BRACES group CLOSE_BRACES arrow 					{ $$ = GroupIdentifierArrowAction($3,$5);}
 	| ARROW_OP OUTPUT SEMICOLON											{ $$ = OutputEndArrowAction();}
 	| ARROW_OP IDENTIFIER SEMICOLON new_line_arrow						{ $$ = IdentifierEndArrowAction($2,$4);}
-	| ARROW_OP OPEN_BRACES group CLOSE_BRACES SEMICOLON new_line_arrow	{ $$ = GroupIdentifierEndArrowAction($3,$6);}
+	| ARROW_OP OPEN_BRACES group_var CLOSE_BRACES SEMICOLON new_line_arrow	{ $$ = GroupIdentifierEndArrowAction($3,$6);}
 	;
 
 new_line_arrow: INPUT arrow 					{ $$ = InputNewLineArrowAction($2); }
 	| IDENTIFIER arrow							{ $$ = IdentifierNewLineArrowAction($1, $2);}
-	| OPEN_BRACES group CLOSE_BRACES arrow		{ $$ = GroupIdentifierNewLineArrowAction($2,$4);}
+	| OPEN_BRACES group_var CLOSE_BRACES arrow		{ $$ = GroupIdentifierNewLineArrowAction($2,$4);}
+	;
+
+group_var: IDENTIFIER COMMA group_aux_var       {$$ = GroupDefinitionVariablesAction($1, $3);}
+    ;
+
+group_aux_var: IDENTIFIER COMMA group_aux_var	{ $$ = GroupAuxDefinitionVariablesAction($1, $3);}
+	| IDENTIFIER								{ $$ = GroupAuxLastIdentifierVariableAction($1);}
 	;
 
 group: IDENTIFIER COMMA group_aux				{ $$ = GroupDefinitionAction($1, $3);}
