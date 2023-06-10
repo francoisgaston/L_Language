@@ -222,7 +222,7 @@ struct group_aux_node{
 // * de dato y, por lo tanto, su nodo en el AST (Árbol de Sintaxis Abstracta).
 // */
 // typedef struct {
-// 	int value;
+// 	int columns;
 // } Constant;
 
 // /**

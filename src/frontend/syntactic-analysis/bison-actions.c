@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "../../backend/code-generation/symbol-table.h"
 
 
 /**
@@ -32,11 +33,11 @@ void yyerror(const char * string) {
 */
 int ProgramGrammarAction(const program_node* program_node) {
 	LogDebug("\tProgramGrammarAction(%p)", program_node);
-	/*
-	* "state" es una variable global que almacena el estado del compilador,
-	* cuyo campo "succeed" indica si la compilación fue o no exitosa, la cual
-	* es utilizada en la función "main".
-	*/
+    /*
+    * "state" es una variable global que almacena el estado del compilador,
+    * cuyo campo "succeed" indica si la compilación fue o no exitosa, la cual
+    * es utilizada en la función "main".
+    */
 	state.succeed = true;
 	/*
 	* Por otro lado, "result" contiene el resultado de aplicar el análisis
@@ -69,26 +70,25 @@ int ProgramGrammarAction(const program_node* program_node) {
 // 	return Divide(leftValue, rightValue);
 // }
 
-// int FactorExpressionGrammarAction(const int value) {
-// 	LogDebug("\tFactorExpressionGrammarAction(%d)", value);
-// 	return value;
+// int FactorExpressionGrammarAction(const int columns) {
+// 	LogDebug("\tFactorExpressionGrammarAction(%d)", columns);
+// 	return columns;
 // }
 
-// int ExpressionFactorGrammarAction(const int value) {
-// 	LogDebug("\tExpressionFactorGrammarAction(%d)", value);
-// 	return value;
+// int ExpressionFactorGrammarAction(const int columns) {
+// 	LogDebug("\tExpressionFactorGrammarAction(%d)", columns);
+// 	return columns;
 // }
 
-// int ConstantFactorGrammarAction(const int value) {
-// 	LogDebug("\tConstantFactorGrammarAction(%d)", value);
-// 	return value;
+// int ConstantFactorGrammarAction(const int columns) {
+// 	LogDebug("\tConstantFactorGrammarAction(%d)", columns);
+// 	return columns;
 // }
 
-// int IntegerConstantGrammarAction(const int value) {
-// 	LogDebug("\tIntegerConstantGrammarAction(%d)", value);
-// 	return value;
+// int IntegerConstantGrammarAction(const int columns) {
+// 	LogDebug("\tIntegerConstantGrammarAction(%d)", columns);
+// 	return columns;
 // }
-
 
 
 //NOSOTROS
@@ -115,6 +115,12 @@ processor_node * ProcessorDefinitionAction(const text_t identifier,const block_n
 	LogDebug("ProcessorDefinitionAction(%p,%p)",identifier, block_node);
 	//Generar y check de la variable en la tabla
 	processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
+    //if(exists_variable_symbol_table(symbol_table_info, identifier.text)){
+    //    LogDebug("OJO QUE YA EXISTE!!");
+    //}
+    //TODO: Se me rompe aca
+    //LogDebug("Direccion tabla %p", symbol_table_info);
+    add_variable_symbol_table(symbol_table_info, "hola", 10);
 	ans->block_node = block_node;
 	ans->identifier = identifier;
 	return ans;

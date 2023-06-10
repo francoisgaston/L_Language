@@ -61,7 +61,7 @@ void generatorCode(const program_node * program_node){
 	output_info = output_init("./salida.py", "w+");
 	exec_template(output_info);
 	new_line(output_info);
-	generateProgramNode(program_node);
+    generateProgramNode(program_node);
 }
 
 static void generateProgramNode(const program_node * program_node){

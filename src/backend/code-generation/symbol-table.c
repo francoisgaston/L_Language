@@ -1,14 +1,19 @@
 #include "symbol-table.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+
 
 symbol_table* init_symbol_table(){
+    printf("ENTRE");
     symbol_table* table = malloc(sizeof(symbol_table));
     if(table == NULL){
+        printf("ERROR");
         return NULL;
     }
     table->variables_array = calloc(CHUNK, sizeof(variable_info));
     if(table->variables_array == NULL){
+        printf("ERROR");
         free(table);
         return NULL;
     }
@@ -35,9 +40,23 @@ bool add_variable_symbol_table(symbol_table* symbol_table, char * name, int valu
     }
     symbol_table->variables_array[symbol_table->variables_count] = malloc(sizeof(variable_info));
     symbol_table->variables_array[symbol_table->variables_count]->name=name;
-    symbol_table->variables_array[symbol_table->variables_count]->value=value;
+    symbol_table->variables_array[symbol_table->variables_count]->columns=value;
     symbol_table->variables_array[symbol_table->variables_count]->scope=symbol_table->scopes[symbol_table->index_scope];
     return true;
+}
+
+void create_scope(symbol_table* symbol_table){
+    if(symbol_table == NULL){
+        printf("NULLLLLLLL");
+    }
+    symbol_table->index_scope++;
+    printf("%d", symbol_table->index_scope);
+    symbol_table->scopes_symbol++;
+    symbol_table->scopes[symbol_table->index_scope] =symbol_table->scopes_symbol;
+}
+
+void remove_scope(symbol_table* symbol_table){
+    symbol_table->index_scope--;
 }
 
 bool exists_variable_symbol_table(symbol_table* symbol_table, char * name){

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include "../../backend/code-generation/symbol-table.h"
+
 
 binary_operator getBinaryOperator(const char * str, const int length) {
     if(strncasecmp(str, AND, length)) {
@@ -139,12 +141,14 @@ token CloseParenthesisPatternAction(const char * lexeme) {
 token OpenBracesPatternAction(const char * lexeme) {
     LogDebug("OpenBracesPatternAction: '%s'.", lexeme);
     yylval.token = OPEN_BRACES;
+    //create_scope(symbol_table_info);
     return OPEN_BRACES;
 }
 
 token CloseBracesPatternAction(const char * lexeme) {
     LogDebug("CloseBracesPatternAction: '%s'.", lexeme);
     yylval.token = CLOSE_BRACES;
+    //remove_scope(symbol_table_info);
     return CLOSE_BRACES;
 }
 

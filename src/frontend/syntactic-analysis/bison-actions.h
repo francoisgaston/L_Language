@@ -19,14 +19,14 @@ int ProgramGrammarAction(const program_node* program_node);
 // int SubtractionExpressionGrammarAction(const int leftValue, const int rightValue);
 // int MultiplicationExpressionGrammarAction(const int leftValue, const int rightValue);
 // int DivisionExpressionGrammarAction(const int leftValue, const int rightValue);
-// int FactorExpressionGrammarAction(const int value);
+// int FactorExpressionGrammarAction(const int columns);
 
 // // Factores.
-// int ExpressionFactorGrammarAction(const int value);
-// int ConstantFactorGrammarAction(const int value);
+// int ExpressionFactorGrammarAction(const int columns);
+// int ConstantFactorGrammarAction(const int columns);
 
 // // Constantes.
-// int IntegerConstantGrammarAction(const int value);
+// int IntegerConstantGrammarAction(const int columns);
 
 
 //NOSOTROS

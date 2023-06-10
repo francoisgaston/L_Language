@@ -3,6 +3,7 @@
 #include "frontend/syntactic-analysis/bison-parser.h"
 #include <stdio.h>
 #include "backend/code-generation/generator.h"
+#include "backend/code-generation/symbol-table.h"
 
 
 // Estado de la aplicación.
@@ -21,8 +22,9 @@ const int main(const int argumentCount, const char ** arguments) {
 
 	// Compilar el programa de entrada.
 	LogInfo("Compilando...\n");
-	//Generar la tabla de symbolos
-	const int result = yyparse();
+    symbol_table_info = init_symbol_table();
+    printf("SALIDA");
+    const int result = yyparse();
 	switch (result) {
 		case 0:
 			// La variable "succeed" es la que setea Bison al identificar el símbolo
