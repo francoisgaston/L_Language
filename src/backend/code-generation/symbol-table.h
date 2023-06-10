@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define MAX_STATES 3
-#define CHUNK 20
+#define CHUNK 10
 #define INITIAL_SCOPE 0
 
 typedef struct{
@@ -30,8 +30,6 @@ void destroy_symbol_table();
 bool add_variable_symbol_table(char * name, int value);
 
 bool exists_variable_symbol_table(char * name);
-
-variable_info* get_variable_symbol_table(char * name);
 
 void create_scope();
 

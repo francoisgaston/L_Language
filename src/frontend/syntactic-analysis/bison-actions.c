@@ -115,9 +115,9 @@ processor_node * ProcessorDefinitionAction(const text_t identifier,const block_n
 	LogDebug("ProcessorDefinitionAction(%p,%p)",identifier, block_node);
 	//Generar y check de la variable en la tabla
 	processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
-    LogDebug("Por entrar");
     if(exists_variable_symbol_table(identifier.text)){
-        LogDebug("\n\n\nOJO QUE YA EXISTE!!");
+        LogError("Not memory available\n");
+        exit(1);
     }
     add_variable_symbol_table(identifier.text, 10);
 	ans->block_node = block_node;
@@ -142,9 +142,9 @@ block_node * SingleLineBlockDefinitionAction(const line_node * line){
 line_node * LocalVariableAssignmentAction(const text_t identifier,const operator_node* operator){
 	LogDebug("LocalVariableAssignmentAction(%p, %p)", identifier, operator);
 	line_node* ans = (line_node*) calloc(1,sizeof(line_node));
-    LogDebug("\n\n\nvaribale: %s", identifier.text);
     if(exists_variable_symbol_table(identifier.text)){
-        LogDebug("\n\n\nOJO QUE YA EXISTE!!");
+        LogError("Not memory available\n");
+        exit(1);
     }
     add_variable_symbol_table(identifier.text, 10);
 	ans->line_node_type = local_assigment_type;
@@ -258,6 +258,11 @@ arrow_node * OutputEndArrowAction() {
 arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_arrow_node * newLineArrow) {
 	LogDebug("IdentifierEndArrowAction(%s, %p)", identifier.text, newLineArrow);
 	arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
+    if(exists_variable_symbol_table(identifier.text)){
+        LogError("Not memory available\n");
+        exit(1);
+    }
+    add_variable_symbol_table(identifier.text, 10);
 	node->identifier = identifier;
 	node->new_line_arrow_node = newLineArrow;
 	node->arrow_node_type = identifier_end_type;
