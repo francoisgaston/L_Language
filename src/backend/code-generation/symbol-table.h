@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define MAX_STATES 3
-#define CHUNK 5
+#define CHUNK 20
 #define INITIAL_SCOPE 0
 
 typedef struct{
@@ -22,20 +22,19 @@ typedef struct{
     int scopes_symbol;
 } symbol_table;
 
-static symbol_table* symbol_table_info;
 
-symbol_table* init_symbol_table();
+void init_symbol_table();
 
-void destroy_sybol_table(symbol_table* symbol_table);
+void destroy_symbol_table();
 
-bool add_variable_symbol_table(symbol_table* symbol_table, char * name, int value);
+bool add_variable_symbol_table(char * name, int value);
 
-bool exists_variable_symbol_table(symbol_table* symbol_table, char * name);
+bool exists_variable_symbol_table(char * name);
 
-variable_info* get_variable_symbol_table(symbol_table* symbol_table, char * name);
+variable_info* get_variable_symbol_table(char * name);
 
-void create_scope(symbol_table* symbol_table);
+void create_scope();
 
-void remove_scope(symbol_table* symbol_table);
+void remove_scope();
 
 #endif //COMPILER_SYMBOL_TABLE_H

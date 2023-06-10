@@ -141,14 +141,14 @@ token CloseParenthesisPatternAction(const char * lexeme) {
 token OpenBracesPatternAction(const char * lexeme) {
     LogDebug("OpenBracesPatternAction: '%s'.", lexeme);
     yylval.token = OPEN_BRACES;
-    //create_scope(symbol_table_info);
+    create_scope();
     return OPEN_BRACES;
 }
 
 token CloseBracesPatternAction(const char * lexeme) {
     LogDebug("CloseBracesPatternAction: '%s'.", lexeme);
     yylval.token = CLOSE_BRACES;
-    //remove_scope(symbol_table_info);
+    remove_scope();
     return CLOSE_BRACES;
 }
 
