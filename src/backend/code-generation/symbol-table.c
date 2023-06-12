@@ -95,7 +95,6 @@ void add_data_table_symbol(char *name, int columns, bool is_proc){
     symbol_table_info->variables_array[symbol_table_info->variables_count]->scope=symbol_table_info->scopes[symbol_table_info->index_scope];
     symbol_table_info->variables_count++;
 
-
     for(int i=0; i<symbol_table_info->variables_count; i++){
         printf("nombre: %s:\n", symbol_table_info->variables_array[i]->name);
         printf("scope: %d\n\n\n", symbol_table_info->variables_array[i]->scope);

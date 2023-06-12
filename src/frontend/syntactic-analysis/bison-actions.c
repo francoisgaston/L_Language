@@ -194,6 +194,10 @@ operator_node * UnaryOperationAction(const unary_operator_t unary_op, const argu
 
 argument_node * IdentifierArgumentAction(const text_t identifier){
 	LogDebug("IdentifierArgumentAction(%p)", identifier);
+    if(!exists_variable_symbol_table(identifier.text)){
+        LogError("Variable %s no fue declarada\n", identifier.text);
+        exit(1);
+    }
 	argument_node* ans = (argument_node*) calloc(1,sizeof(argument_node));
 	ans->argument_node_type = identifier_argument_type;
 	ans->identifier = identifier;
@@ -265,6 +269,7 @@ arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_ar
         LogError("Variable %s ya fue declarada\n", identifier.text);
         exit(1);
     }
+    LogDebug("AGREGEEEEEEE\n\n\n\n\n %s", identifier.text);
     add_variable_symbol_table(identifier.text, 10);
     arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
 	node->identifier = identifier;
@@ -310,10 +315,11 @@ new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_var_node * g
 group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
     LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
     group_var_node * group = (group_var_node*) calloc(1, sizeof(group_var_node));
-    if(!exists_proc_symbol_table(identifier.text)){
+    if(exists_variable_symbol_table(identifier.text)){
         LogError("Procesador %s no inicializado\n", identifier.text);
         exit(1);
     }
+    add_variable_symbol_table(identifier.text, 10);
     group->identifier = identifier;
     group->group_aux_node = groupAux;
     return group;
@@ -327,6 +333,11 @@ group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, 
 }
 group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier){
     LogDebug("ProcessorAdditionAction(%p)", identifier);
+    if(exists_variable_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado\n", identifier.text);
+        exit(1);
+    }
+    add_variable_symbol_table(identifier.text, 10);
     group_aux_var_node* group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
     group_aux->group_aux_node_type = last_group_aux_type;
     group_aux->identifier = identifier;

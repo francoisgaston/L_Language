@@ -19,5 +19,5 @@ proc b {
 };
 
 INPUT (4);
-INPUT -> {A1, A2} -> {A3,A4};
-A3 -> OUTPUT;
+INPUT -> {A1, A2} -> A38;
+A38 -> OUTPUT;

@@ -23,9 +23,9 @@ proc B2 {
 };
 
 INPUT (4);
-input -> A -> aux_a;
-aux_a -> B1 -> aux_b1;
-aux_a -> B2 -> aux_b2;
-{ aux_b1, aux_b2 } -> output;
+INPUT -> A -> pepe;
+pepe -> B1 -> aux_b1;
+pepe -> B2 -> aux_b2;
+( aux_b1, aux_b2 ) -> output;
 
 
