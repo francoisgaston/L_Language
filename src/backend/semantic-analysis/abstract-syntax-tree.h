@@ -76,6 +76,7 @@ typedef struct input_variable_node input_variable_node;
 typedef struct constant_variable_node constant_variable_node;
 typedef struct arrow_node arrow_node;
 typedef struct new_line_arrow_node new_line_arrow_node;
+typedef struct var_identifier_node var_identifier_node;
 typedef struct group_aux_node group_aux_node;
 typedef struct group_node group_node;
 typedef struct group_aux_var_node group_aux_var_node;
@@ -200,6 +201,10 @@ struct new_line_arrow_node{
 	text_t identifier;
 	const group_node* group_node;
     const group_var_node * group_var_node;
+};
+
+struct var_identifier_node{
+    text_t identifier;
 };
 
 struct group_node{

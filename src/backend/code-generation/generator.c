@@ -28,6 +28,8 @@ static void generateArrowNode(const arrow_node* arrow_node,char* var);
 static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var);
 static void generateGroupNode(const group_node* group_node, char* var);
 static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_node, char* var);
+static void generateGroupVarNode(const group_var_node* new_line_arrow_node);
+static void generateGroupAuxVarNode(const group_aux_var_node * group_aux_var_node);
 
 char* strToupper(char* str);
 
@@ -89,7 +91,7 @@ static void generateProcessorNode(const processor_node* processor_node){
 	output("(input):");
 	add_tab(output_info);
 	new_line(output_info);
-	output_LF("out = [False]*1024");
+	output_LF("out = [2]*1024");
 	generateBlockNode(processor_node->block_node);
 	output_RTAB_LF("return out");
 	new_line(output_info);
@@ -237,7 +239,7 @@ static void generateConnectionNode(const connection_node* connection_node){
 	new_line(output_info);
 	new_line(output_info);
 	output_ATAB_LF("def main_proc(input):");
-	output_LF("output = [False]*1024");
+	output_LF("output = [2]*1024");
 	generateArrowNode(connection_node->arrow_node,"input");
 }
 
@@ -251,7 +253,7 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 		output(arrow_node->identifier.text);
 		output("(");
 		output(var);
-		output_LF(")");
+		output_LF(").copy()");
 		generateArrowNode(arrow_node->arrow_node, "output");
 		break;
 	case group_identifier_type:
@@ -262,15 +264,23 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 		break;
 	case output_identifier_type:
 		LogDebug("Entre en output_identifier_type");
-		output_LF("return output");
+		output_LF("salida = []");
+        output_ATAB_LF("for bit in output:");
+        output_ATAB_LF("if bit == 2:");
+        output_RTAB_LF("break");
+        output_RTAB_LF("salida.append(bit)");
+        output_RTAB_LF("return salida");
 		break;
 	case identifier_end_type:
 		LogDebug("Entre en identifier_end_type");
 		output(arrow_node->identifier.text);
-		output_LF(" = output");
+		output_LF(" = output.copy()");
 		generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
 		break;
 	case group_identifier_end_type:
+        //LogDebug("Entre en group_identifier_end_type");
+        //generateGroupVarNode(arrow_node->group_var_node);
+        //generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
 		//ESTADO INVALIDO?
 		break;
 	default:
@@ -293,12 +303,39 @@ static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_n
 	case group_identifier_new_line_type:
 		LogDebug("Entre en group_identifier_new_line_type");
 		output("output = ");
-		generateGroupNode(new_line_arrow_node->group_node,var);
+		generateGroupVarNode(new_line_arrow_node->group_var_node);
 		generateArrowNode(new_line_arrow_node->arrow_node, "output");
 		break;
 	default:
 		break;
 	}
+}
+
+static void generateGroupVarNode(const group_var_node* group_var_node){
+    LogDebug("Entre en generateGroupVarNode");
+    output("union( ");
+    output(group_var_node->identifier.text);
+    output(", ");
+    generateGroupAuxVarNode(group_var_node->group_aux_node);
+}
+
+static void generateGroupAuxVarNode(const group_aux_var_node * group_aux_var_node){
+    switch(group_aux_var_node->group_aux_node_type){
+        case last_group_aux_type:
+            LogDebug("Entre en last_group_aux_type");
+            output(group_aux_var_node->identifier.text);
+            output_LF(" )");
+            break;
+        case common_group_aux_type:
+            LogDebug("Entre en common_group_aux_type");
+            output(group_aux_var_node->identifier.text);
+            output_LF(" , ");
+            generateGroupAuxVarNode(group_aux_var_node->group_aux_node);
+            break;
+        default:
+            printError("Invalid argument_node");
+            break;
+    }
 }
 
 static void generateGroupNode(const group_node* group_node, char* var){
@@ -321,7 +358,7 @@ static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var
 			output("(");	
 			output(var);
 			output(")");
-			output_LF(")");
+			output_LF(").copy()");
 			break;
 		case common_group_aux_type:
 			LogDebug("Entre en common_group_aux_type");

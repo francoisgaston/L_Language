@@ -20,4 +20,4 @@ proc b {
 
 INPUT (4);
 INPUT -> {A1, A2} -> A38;
-A38 -> OUTPUT;
+A38 -> A1 ->OUTPUT;

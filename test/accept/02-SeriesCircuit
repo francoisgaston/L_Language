@@ -12,4 +12,4 @@ proc B {
 };
 
 input (4);
-input -> A -> B -> output;
+input -> A -> B -> {A, B} -> output;

@@ -141,11 +141,9 @@ block_node * SingleLineBlockDefinitionAction(const line_node * line){
 }
 line_node * LocalVariableAssignmentAction(const text_t identifier,const operator_node* operator){
 	LogDebug("LocalVariableAssignmentAction(%p, %p)", identifier, operator);
-    if(exists_variable_symbol_table(identifier.text)){
-        LogError("Variable %s ya fue inicializada\n", identifier.text);
-        exit(1);
+    if(!exists_variable_symbol_table(identifier.text)){
+        add_variable_symbol_table(identifier.text, 10);
     }
-    add_variable_symbol_table(identifier.text, 10);
     line_node* ans = (line_node*) calloc(1,sizeof(line_node));
 	ans->line_node_type = local_assigment_type;
 	ans->identifier = identifier;
@@ -166,7 +164,6 @@ exit_var_node * ExitVariableDefinitionAction(const number_t exit_var_number){
 	ans->exit_var_index = exit_var_number;
 	return ans;
 }
-
 operator_node * BinaryOperationAction(const binary_operator_t binary_op, const argument_node * arg1, const argument_node * arg2) {
 	LogDebug("BinaryOperationAction(%s, %p, %p)", binary_op.op, arg1, arg2);
 	if(binary_op.type == UNDEF_OP) {
@@ -179,7 +176,6 @@ operator_node * BinaryOperationAction(const binary_operator_t binary_op, const a
 	op_node->argument_node_2 = arg2;
 	return op_node;
 }
-
 operator_node * UnaryOperationAction(const unary_operator_t unary_op, const argument_node * arg) {
 	LogDebug("UnaryOperationAction(%s, %p)", unary_op.op, arg);
 	if(unary_op.type == UNDEF_OP) {
@@ -191,7 +187,6 @@ operator_node * UnaryOperationAction(const unary_operator_t unary_op, const argu
 	op_node->argument_node_1 = arg;
 	return op_node;
 }
-
 argument_node * IdentifierArgumentAction(const text_t identifier){
 	LogDebug("IdentifierArgumentAction(%p)", identifier);
     if(!exists_variable_symbol_table(identifier.text)){
@@ -263,16 +258,10 @@ arrow_node * OutputEndArrowAction() {
 	return node;
 }
 
-arrow_node * IdentifierEndArrowAction(const text_t identifier, const new_line_arrow_node * newLineArrow) {
-	LogDebug("IdentifierEndArrowAction(%s, %p)", identifier.text, newLineArrow);
-    if(exists_variable_symbol_table(identifier.text)){
-        LogError("Variable %s ya fue declarada\n", identifier.text);
-        exit(1);
-    }
-    LogDebug("AGREGEEEEEEE\n\n\n\n\n %s", identifier.text);
-    add_variable_symbol_table(identifier.text, 10);
+arrow_node * IdentifierEndArrowAction(const var_identifier_node * identifier, const new_line_arrow_node * newLineArrow) {
+	LogDebug("IdentifierEndArrowAction(%s, %p)", identifier->identifier.text, newLineArrow);
     arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
-	node->identifier = identifier;
+	node->identifier = identifier->identifier;
 	node->new_line_arrow_node = newLineArrow;
 	node->arrow_node_type = identifier_end_type;
 	return node;
@@ -282,7 +271,7 @@ arrow_node * GroupIdentifierEndArrowAction(const group_var_node * group,const ne
 	arrow_node * arrow = (arrow_node*) calloc(1, sizeof(arrow_node));
 	arrow->arrow_node_type = group_identifier_end_type;
 	arrow->new_line_arrow_node = newLineArrow;
-	arrow->group_var_node= group;
+	arrow->group_var_node = group;
 	return arrow;
 }
 new_line_arrow_node * InputNewLineArrowAction(const arrow_node * arrow){
@@ -315,8 +304,8 @@ new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_var_node * g
 group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
     LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
     group_var_node * group = (group_var_node*) calloc(1, sizeof(group_var_node));
-    if(exists_variable_symbol_table(identifier.text)){
-        LogError("Procesador %s no inicializado\n", identifier.text);
+    if(!exists_variable_symbol_table(identifier.text)){
+        LogError("Variable %s no inicializada\n", identifier.text);
         exit(1);
     }
     add_variable_symbol_table(identifier.text, 10);
@@ -326,24 +315,20 @@ group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const g
 }
 group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
     group_aux_var_node * group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
+    add_variable_symbol_table(identifier.text, 10);
     group_aux->group_aux_node_type = common_group_aux_type;
     group_aux->group_aux_node = groupAux;
     group_aux->identifier = identifier;
     return group_aux;
 }
 group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier){
-    LogDebug("ProcessorAdditionAction(%p)", identifier);
-    if(exists_variable_symbol_table(identifier.text)){
-        LogError("Procesador %s no inicializado\n", identifier.text);
-        exit(1);
-    }
+    LogDebug("GroupAuxLastIdentifierVariableAction(%p)", identifier);
     add_variable_symbol_table(identifier.text, 10);
     group_aux_var_node* group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
     group_aux->group_aux_node_type = last_group_aux_type;
     group_aux->identifier = identifier;
     return group_aux;
 }
-
 group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
 	LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
 	group_node * group = (group_node*) calloc(1, sizeof(group_node));
@@ -368,4 +353,11 @@ group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier){
 	group_aux->group_aux_node_type = last_group_aux_type;
 	group_aux->identifier = identifier;
 	return group_aux;
+}
+var_identifier_node * newVariableIdentifier(const text_t identifier){
+    LogDebug("newVariableIdentifier(%p)", identifier);
+    var_identifier_node* group_aux = (var_identifier_node*) calloc(1, sizeof(var_identifier_node));
+    add_variable_symbol_table(identifier.text, 10);
+    group_aux->identifier = identifier;
+    return group_aux;
 }
