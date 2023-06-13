@@ -10,7 +10,7 @@ proc B {
     aux = AND($0, $1);
     aux2 = NOT($2);
     //esto es un comentario
-    #0 = OR(aux, $5);
+    #0 = OR(aux, $4);
     #1 = OR(aux, $2);
 };
 

@@ -6,6 +6,6 @@ proc BUENAS_TARDES_COMO_ESTAS {
     #0 = OR(aux, $2);
 };
 
-INPUT (3);
+INPUT (4);
 
 INPUT -> BUENAS_TARDES_COMO_ESTAS -> OUTPUT;

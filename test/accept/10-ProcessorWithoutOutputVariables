@@ -5,5 +5,5 @@ proc A {
     aux4 = AND(aux, aux2);
 };
 
-INPUT (3);
+INPUT (4);
 INPUT -> A -> OUTPUT;

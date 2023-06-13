@@ -378,25 +378,26 @@ int getInputProcesor(const block_node* block_node){
     aux = *block_node;
     while(aux.block_node_type != single_line_block_type){
         if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type){
-            if(in < aux.line_node->operator_node->argument_node_1->input_variable.n){
-                in = aux.line_node->operator_node->argument_node_1->input_variable.n;
+            if(in <= aux.line_node->operator_node->argument_node_1->input_variable.n){
+                //correcion de +1 por index de array e index de $x, (caso test05)
+                in = aux.line_node->operator_node->argument_node_1->input_variable.n+1;
             }
         }
         if(aux.line_node->operator_node->operator_node_type == binary_operator_type && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type){
-            if(in < aux.line_node->operator_node->argument_node_2->input_variable.n){
-                in = aux.line_node->operator_node->argument_node_2->input_variable.n;
+            if(in <= aux.line_node->operator_node->argument_node_2->input_variable.n){
+                in = aux.line_node->operator_node->argument_node_2->input_variable.n+1;
             }
         }
         aux = *aux.block_node;
     }
     if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type){
-        if(in < aux.line_node->operator_node->argument_node_1->input_variable.n){
-            in = aux.line_node->operator_node->argument_node_1->input_variable.n;
+        if(in <= aux.line_node->operator_node->argument_node_1->input_variable.n){
+            in = aux.line_node->operator_node->argument_node_1->input_variable.n+1;
         }
     }
     if(aux.line_node->operator_node->operator_node_type == binary_operator_type && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type){
-        if(in < aux.line_node->operator_node->argument_node_2->input_variable.n){
-            in = aux.line_node->operator_node->argument_node_2->input_variable.n;
+        if(in <= aux.line_node->operator_node->argument_node_2->input_variable.n){
+            in = aux.line_node->operator_node->argument_node_2->input_variable.n+1;
         }
     }
     return in;
@@ -408,15 +409,15 @@ int getOutputProcesor(const block_node* block_node){
     aux = *block_node;
     while(aux.block_node_type != single_line_block_type){
         if(aux.line_node->line_node_type == exit_assigment_type){
-            if(out < aux.line_node->exit_var_node->exit_var_index.n){
-                out = aux.line_node->exit_var_node->exit_var_index.n;
+            if(out <= aux.line_node->exit_var_node->exit_var_index.n){
+                out = aux.line_node->exit_var_node->exit_var_index.n+1;
             }
         }
         aux = *aux.block_node;
     }
     if(aux.line_node->line_node_type == exit_assigment_type){
-        if(out < aux.line_node->exit_var_node->exit_var_index.n){
-            out = aux.line_node->exit_var_node->exit_var_index.n;
+        if(out <= aux.line_node->exit_var_node->exit_var_index.n){
+            out = aux.line_node->exit_var_node->exit_var_index.n+1;
         }
     }
     return out;
