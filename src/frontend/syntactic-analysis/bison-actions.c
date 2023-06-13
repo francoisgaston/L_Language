@@ -9,6 +9,13 @@
 int getInputProcesor(const block_node* block_node);
 int getOutputProcesor(const block_node* block_node);
 boolean checkInputOutput(const input_node* input, const connection_node* conection);
+unsigned int checkNewLineArrow(const new_line_arrow_node * new_line_arrow_node, unsigned  int in, unsigned int originalInput);
+unsigned int checkGroupAuxVar(const group_aux_var_node* group_aux_var_node);
+unsigned int checkSingleIdentifier(text_t identifier, unsigned int input);
+unsigned int checkGroupIdentifier(const group_node* group_aux_node, unsigned  int in);
+unsigned int checkGroupAux(const group_aux_node* group_aux_node, unsigned int  in);
+
+
 /**
  * Implementación de "bison-grammar.h".
  */
@@ -370,8 +377,7 @@ var_identifier_node * newVariableIdentifier(const text_t identifier){
     return group_aux;
 }
 
-
-
+//Funciones auxiliares para validacion de conexiones
 int getInputProcesor(const block_node* block_node){
     unsigned int in = 0;
     struct block_node aux;
@@ -417,75 +423,6 @@ int getOutputProcesor(const block_node* block_node){
     return out;
 }
 
-unsigned int checkSingleIdentifier(text_t identifier, unsigned int input);
-unsigned int checkGroupIdentifier(const group_node* group_aux_node, unsigned  int in);
-unsigned int checkGroupAux(const group_aux_node* group_aux_node, unsigned int  in);
-
-unsigned int checkSingleIdentifier(text_t identifier, unsigned int input){
-    if(input < get_input(identifier.text)){
-        LogDebug("tendria que ser %d", get_input(identifier.text));
-        return false;
-    }
-    return get_output(identifier.text);
-}
-
-unsigned int checkGroupAux(const group_aux_node* group_aux_node, unsigned int  in){
-    unsigned int out = 0;
-    while(group_aux_node->group_aux_node_type != last_group_aux_type){
-        if(in < get_input(group_aux_node->identifier.text)){
-            return false;
-        }
-        out += get_output(group_aux_node->identifier.text);
-        group_aux_node = group_aux_node->group_aux_node;
-    }
-    if(in < get_input(group_aux_node->identifier.text)){
-        return false;
-    }
-    out += get_output(group_aux_node->identifier.text);
-    return out;
-}
-
-unsigned int checkGroupIdentifier(const group_node * group_aux_node, unsigned  int in){
-    if(in < get_input(group_aux_node->identifier.text)){
-        return false;
-    }
-    in = get_output(group_aux_node->identifier.text);
-    in += checkGroupAux(group_aux_node->group_aux_node, in);
-    return in;
-}
-
-unsigned int checkNewLineArrow(const new_line_arrow_node * new_line_arrow_node, unsigned  int in, unsigned int originalInput);
-
-unsigned int checkGroupAuxVar(const group_aux_var_node* group_aux_var_node);
-
-unsigned int checkNewLineArrow(const new_line_arrow_node* new_line_arrow_node, unsigned  int in, unsigned int originalInput){
-    switch (new_line_arrow_node->new_line_arrow_node_type) {
-        case input_new_line_type:
-            in = originalInput;
-            break;
-        case single_identifier_new_line_type:
-            //OJO puede haber un error
-            in = get_output(new_line_arrow_node->identifier.text);
-            break;
-        case group_identifier_new_line_type:
-            in = get_output(new_line_arrow_node->group_var_node->identifier.text);
-            in += checkGroupAuxVar(new_line_arrow_node->group_var_node->group_aux_node);
-            break;
-    }
-    return in;
-}
-
-unsigned int checkGroupAuxVar(const group_aux_var_node* group_aux_var_node){
-    unsigned out = 0;
-    while(group_aux_var_node->group_aux_node_type != last_group_aux_type){
-        out += get_output(group_aux_var_node->identifier.text);
-        group_aux_var_node = group_aux_var_node->group_aux_node;
-    }
-    out += get_output(group_aux_var_node->identifier.text);
-    return out;
-}
-
-
 boolean checkInputOutput(const input_node* input, const connection_node* conection){
     unsigned  int in = input->integer.n;
     arrow_node aux  = *conection->arrow_node;
@@ -513,4 +450,63 @@ boolean checkInputOutput(const input_node* input, const connection_node* conecti
         }
     }
     return true;
+}
+
+unsigned int checkSingleIdentifier(text_t identifier, unsigned int input){
+    if(input < get_input(identifier.text)){
+        return false;
+    }
+    return get_output(identifier.text);
+}
+
+unsigned int checkGroupIdentifier(const group_node * group_aux_node, unsigned  int in){
+    if(in < get_input(group_aux_node->identifier.text)){
+        return false;
+    }
+    in = get_output(group_aux_node->identifier.text);
+    in += checkGroupAux(group_aux_node->group_aux_node, in);
+    return in;
+}
+
+unsigned int checkGroupAux(const group_aux_node* group_aux_node, unsigned int  in){
+    unsigned int out = 0;
+    while(group_aux_node->group_aux_node_type != last_group_aux_type){
+        if(in < get_input(group_aux_node->identifier.text)){
+            return false;
+        }
+        out += get_output(group_aux_node->identifier.text);
+        group_aux_node = group_aux_node->group_aux_node;
+    }
+    if(in < get_input(group_aux_node->identifier.text)){
+        return false;
+    }
+    out += get_output(group_aux_node->identifier.text);
+    return out;
+}
+
+unsigned int checkNewLineArrow(const new_line_arrow_node* new_line_arrow_node, unsigned  int in, unsigned int originalInput){
+    switch (new_line_arrow_node->new_line_arrow_node_type) {
+        case input_new_line_type:
+            in = originalInput;
+            break;
+        case single_identifier_new_line_type:
+            //OJO puede haber un error
+            in = get_output(new_line_arrow_node->identifier.text);
+            break;
+        case group_identifier_new_line_type:
+            in = get_output(new_line_arrow_node->group_var_node->identifier.text);
+            in += checkGroupAuxVar(new_line_arrow_node->group_var_node->group_aux_node);
+            break;
+    }
+    return in;
+}
+
+unsigned int checkGroupAuxVar(const group_aux_var_node* group_aux_var_node){
+    unsigned out = 0;
+    while(group_aux_var_node->group_aux_node_type != last_group_aux_type){
+        out += get_output(group_aux_var_node->identifier.text);
+        group_aux_var_node = group_aux_var_node->group_aux_node;
+    }
+    out += get_output(group_aux_var_node->identifier.text);
+    return out;
 }

@@ -24,12 +24,13 @@ proc B2 {
 
 proc C {
     #0 = BUFF($4);
+    #1 = BUFF($4);
 };
 
 INPUT (4);
 INPUT -> A -> pepe;
 pepe -> B1 -> aux_b1;
 pepe -> B2 -> aux_b2;
-( aux_b1, aux_b2 ) -> C -> output;
+( aux_b1, aux_b2 ) -> output;
 
 
