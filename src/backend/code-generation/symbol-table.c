@@ -78,22 +78,33 @@ bool exists_proc_symbol_table(char * name){
     return false;
 }
 
-int get_input_proc(char * name){
+int get_input(char * name){
     for(int i=0; i<symbol_table_info->variables_count; i++){
-        if(symbol_table_info->variables_array[i]->is_proc && strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
+        if(strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
             return symbol_table_info->variables_array[i]->input;
         }
     }
     return false;
 }
 
-int get_output_proc(char * name){
+int get_output(char * name){
     for(int i=0; i<symbol_table_info->variables_count; i++){
-        if(symbol_table_info->variables_array[i]->is_proc && strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
+        if(strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
             return symbol_table_info->variables_array[i]->output;
         }
     }
     return false;
+}
+
+//TODO: Preguntar fuertemente
+void set_input_output_var(char* name, unsigned int value){
+    for(int i=0; i<symbol_table_info->variables_count; i++){
+        if(strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
+            symbol_table_info->variables_array[i]->input = value;
+            symbol_table_info->variables_array[i]->output = value;
+            printf("entreeeeeeeeee");
+        }
+    }
 }
 
 

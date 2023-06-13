@@ -377,100 +377,140 @@ int getInputProcesor(const block_node* block_node){
     struct block_node aux;
     aux = *block_node;
     while(aux.block_node_type != single_line_block_type){
-        if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type){
-            if(in <= aux.line_node->operator_node->argument_node_1->input_variable.n){
+        if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type
+            && in <= aux.line_node->operator_node->argument_node_1->input_variable.n){
                 //correcion de +1 por index de array e index de $x, (caso test05)
                 in = aux.line_node->operator_node->argument_node_1->input_variable.n+1;
-            }
         }
-        if(aux.line_node->operator_node->operator_node_type == binary_operator_type && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type){
-            if(in <= aux.line_node->operator_node->argument_node_2->input_variable.n){
+        if(aux.line_node->operator_node->operator_node_type == binary_operator_type && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type
+            && in <= aux.line_node->operator_node->argument_node_2->input_variable.n){
                 in = aux.line_node->operator_node->argument_node_2->input_variable.n+1;
-            }
         }
         aux = *aux.block_node;
     }
-    if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type){
-        if(in <= aux.line_node->operator_node->argument_node_1->input_variable.n){
+    if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type
+        && in <= aux.line_node->operator_node->argument_node_1->input_variable.n){
             in = aux.line_node->operator_node->argument_node_1->input_variable.n+1;
-        }
     }
-    if(aux.line_node->operator_node->operator_node_type == binary_operator_type && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type){
-        if(in <= aux.line_node->operator_node->argument_node_2->input_variable.n){
+    if(aux.line_node->operator_node->operator_node_type == binary_operator_type
+        && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type
+        && in <= aux.line_node->operator_node->argument_node_2->input_variable.n){
             in = aux.line_node->operator_node->argument_node_2->input_variable.n+1;
-        }
     }
     return in;
 }
 
 int getOutputProcesor(const block_node* block_node){
     unsigned int out = 0;
-    struct block_node aux;
-    aux = *block_node;
+    struct block_node aux = *block_node;
     while(aux.block_node_type != single_line_block_type){
-        if(aux.line_node->line_node_type == exit_assigment_type){
-            if(out <= aux.line_node->exit_var_node->exit_var_index.n){
+        if(aux.line_node->line_node_type == exit_assigment_type
+            && out <= aux.line_node->exit_var_node->exit_var_index.n){
                 out = aux.line_node->exit_var_node->exit_var_index.n+1;
             }
-        }
         aux = *aux.block_node;
     }
-    if(aux.line_node->line_node_type == exit_assigment_type){
-        if(out <= aux.line_node->exit_var_node->exit_var_index.n){
+    if(aux.line_node->line_node_type == exit_assigment_type
+        && out <= aux.line_node->exit_var_node->exit_var_index.n){
             out = aux.line_node->exit_var_node->exit_var_index.n+1;
-        }
     }
     return out;
 }
 
+unsigned int checkSingleIdentifier(text_t identifier, unsigned int input);
+unsigned int checkGroupIdentifier(const group_node* group_aux_node, unsigned  int in);
+unsigned int checkGroupAux(const group_aux_node* group_aux_node, unsigned int  in);
+
+unsigned int checkSingleIdentifier(text_t identifier, unsigned int input){
+    if(input < get_input(identifier.text)){
+        LogDebug("tendria que ser %d", get_input(identifier.text));
+        return false;
+    }
+    return get_output(identifier.text);
+}
+
+unsigned int checkGroupAux(const group_aux_node* group_aux_node, unsigned int  in){
+    unsigned int out = 0;
+    while(group_aux_node->group_aux_node_type != last_group_aux_type){
+        if(in < get_input(group_aux_node->identifier.text)){
+            return false;
+        }
+        out += get_output(group_aux_node->identifier.text);
+        group_aux_node = group_aux_node->group_aux_node;
+    }
+    if(in < get_input(group_aux_node->identifier.text)){
+        return false;
+    }
+    out += get_output(group_aux_node->identifier.text);
+    return out;
+}
+
+unsigned int checkGroupIdentifier(const group_node * group_aux_node, unsigned  int in){
+    if(in < get_input(group_aux_node->identifier.text)){
+        return false;
+    }
+    in = get_output(group_aux_node->identifier.text);
+    in += checkGroupAux(group_aux_node->group_aux_node, in);
+    return in;
+}
+
+unsigned int checkNewLineArrow(const new_line_arrow_node * new_line_arrow_node, unsigned  int in, unsigned int originalInput);
+
+unsigned int checkGroupAuxVar(const group_aux_var_node* group_aux_var_node);
+
+unsigned int checkNewLineArrow(const new_line_arrow_node* new_line_arrow_node, unsigned  int in, unsigned int originalInput){
+    switch (new_line_arrow_node->new_line_arrow_node_type) {
+        case input_new_line_type:
+            in = originalInput;
+            break;
+        case single_identifier_new_line_type:
+            //OJO puede haber un error
+            in = get_output(new_line_arrow_node->identifier.text);
+            break;
+        case group_identifier_new_line_type:
+            in = get_output(new_line_arrow_node->group_var_node->identifier.text);
+            in += checkGroupAuxVar(new_line_arrow_node->group_var_node->group_aux_node);
+            break;
+    }
+    return in;
+}
+
+unsigned int checkGroupAuxVar(const group_aux_var_node* group_aux_var_node){
+    unsigned out = 0;
+    while(group_aux_var_node->group_aux_node_type != last_group_aux_type){
+        out += get_output(group_aux_var_node->identifier.text);
+        group_aux_var_node = group_aux_var_node->group_aux_node;
+    }
+    out += get_output(group_aux_var_node->identifier.text);
+    return out;
+}
+
+
 boolean checkInputOutput(const input_node* input, const connection_node* conection){
     unsigned  int in = input->integer.n;
-    unsigned int var = 0;
-    group_aux_node group_aux_node;
     arrow_node aux  = *conection->arrow_node;
-    LogDebug("gruop aux = %d", aux.arrow_node_type);
     while(aux.arrow_node_type != output_identifier_type){
-        LogDebug("gruop aux = %d", aux.arrow_node_type);
         switch (aux.arrow_node_type) {
             case single_identifier_type:
-                if(in < get_input_proc(aux.identifier.text)){
-                    return false;
-                }
-                in = get_output_proc(aux.identifier.text);
+                in = checkSingleIdentifier(aux.identifier, in);
                 aux = *aux.arrow_node;
                 break;
             case group_identifier_type:
-                if(in < get_input_proc(aux.group_node->identifier.text)){
-                    return false;
-                }
-                var = get_output_proc(aux.group_node->identifier.text);
-                group_aux_node = *aux.group_node->group_aux_node;
-                while(group_aux_node.group_aux_node_type != last_group_aux_type){
-                    if(in < get_input_proc(group_aux_node.identifier.text)){
-                        return false;
-                    }
-                    var += get_output_proc(group_aux_node.identifier.text);
-                    printf("var es: %d\n", var);
-                    group_aux_node = *group_aux_node.group_aux_node;
-                }
-                if(in < get_input_proc(group_aux_node.identifier.text)){
-                    return false;
-                }
-                var += get_output_proc(group_aux_node.identifier.text);
-                in = var;
+                in = checkGroupIdentifier(aux.group_node, in);
                 aux = *aux.arrow_node;
                 break;
             case output_identifier_type:
+                //Nunca deberia llegar
                 break;
             case identifier_end_type:
+                set_input_output_var(aux.identifier.text, in);
+                in = checkNewLineArrow(aux.new_line_arrow_node, in, input->integer.n);
                 aux = *aux.new_line_arrow_node->arrow_node;
-                in = 1024;
                 break;
             case group_identifier_end_type:
-                in = 1024;
+                //Nunca deberia llegar
                 break;
         }
-        printf("input es: %d\n", in);
     }
     return true;
 }

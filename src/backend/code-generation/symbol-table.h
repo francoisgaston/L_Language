@@ -24,9 +24,9 @@ typedef struct{
     int scopes_symbol;
 } symbol_table;
 
-int get_input_proc(char * name);
+int get_input(char * name);
 
-int get_output_proc(char * name);
+int get_output(char * name);
 
 void init_symbol_table();
 
@@ -43,5 +43,7 @@ bool exists_proc_symbol_table(char * name);
 void create_scope();
 
 void remove_scope();
+
+void set_input_output_var(char* name, unsigned int value);
 
 #endif //COMPILER_SYMBOL_TABLE_H
