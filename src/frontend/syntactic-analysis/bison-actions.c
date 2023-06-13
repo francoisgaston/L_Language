@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include "../../backend/code-generation/symbol-table.h"
 
-
+int getInputProcesor(const block_node* block_node);
+int getOutputProcesor(const block_node* block_node);
+boolean checkInputOutput(const input_node* input, const connection_node* conection);
 /**
  * Implementación de "bison-grammar.h".
  */
@@ -104,6 +106,10 @@ program_node* ProcessorAdditionAction(const processor_node * proc, const program
 
 program_node * ConnectionDefinitionAction(const input_node* input, const connection_node* conection){
 	LogDebug("\tConnectionDefinitionAction(%p, %p)", input, conection);
+    if(!checkInputOutput(input, conection)){
+        LogError("No coinciden input y output");
+        exit(1);
+    }
 	program_node* ans = (program_node*) calloc(1,sizeof(program_node));
 	ans->program_node_type = connection_node_type;
 	ans->connection_node = conection;
@@ -118,7 +124,9 @@ processor_node * ProcessorDefinitionAction(const text_t identifier,const block_n
         LogError("Variable %s ya fue inicializada\n", identifier.text);
         exit(1);
     }
-    add_proc_symbol_table(identifier.text, 10);
+    int input = getInputProcesor(block_node);
+    int output = getOutputProcesor(block_node);
+    add_proc_symbol_table(identifier.text, input, output);
     processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
 	ans->block_node = block_node;
 	ans->identifier = identifier;
@@ -142,7 +150,7 @@ block_node * SingleLineBlockDefinitionAction(const line_node * line){
 line_node * LocalVariableAssignmentAction(const text_t identifier,const operator_node* operator){
 	LogDebug("LocalVariableAssignmentAction(%p, %p)", identifier, operator);
     if(!exists_variable_symbol_table(identifier.text)){
-        add_variable_symbol_table(identifier.text, 10);
+        add_variable_symbol_table(identifier.text);
     }
     line_node* ans = (line_node*) calloc(1,sizeof(line_node));
 	ans->line_node_type = local_assigment_type;
@@ -308,14 +316,14 @@ group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const g
         LogError("Variable %s no inicializada\n", identifier.text);
         exit(1);
     }
-    add_variable_symbol_table(identifier.text, 10);
+    add_variable_symbol_table(identifier.text);
     group->identifier = identifier;
     group->group_aux_node = groupAux;
     return group;
 }
 group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
     group_aux_var_node * group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
-    add_variable_symbol_table(identifier.text, 10);
+    add_variable_symbol_table(identifier.text);
     group_aux->group_aux_node_type = common_group_aux_type;
     group_aux->group_aux_node = groupAux;
     group_aux->identifier = identifier;
@@ -323,7 +331,7 @@ group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, 
 }
 group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier){
     LogDebug("GroupAuxLastIdentifierVariableAction(%p)", identifier);
-    add_variable_symbol_table(identifier.text, 10);
+    add_variable_symbol_table(identifier.text);
     group_aux_var_node* group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
     group_aux->group_aux_node_type = last_group_aux_type;
     group_aux->identifier = identifier;
@@ -357,7 +365,111 @@ group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier){
 var_identifier_node * newVariableIdentifier(const text_t identifier){
     LogDebug("newVariableIdentifier(%p)", identifier);
     var_identifier_node* group_aux = (var_identifier_node*) calloc(1, sizeof(var_identifier_node));
-    add_variable_symbol_table(identifier.text, 10);
+    add_variable_symbol_table(identifier.text);
     group_aux->identifier = identifier;
     return group_aux;
+}
+
+
+
+int getInputProcesor(const block_node* block_node){
+    unsigned int in = 0;
+    struct block_node aux;
+    aux = *block_node;
+    while(aux.block_node_type != single_line_block_type){
+        if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type){
+            if(in < aux.line_node->operator_node->argument_node_1->input_variable.n){
+                in = aux.line_node->operator_node->argument_node_1->input_variable.n;
+            }
+        }
+        if(aux.line_node->operator_node->operator_node_type == binary_operator_type && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type){
+            if(in < aux.line_node->operator_node->argument_node_2->input_variable.n){
+                in = aux.line_node->operator_node->argument_node_2->input_variable.n;
+            }
+        }
+        aux = *aux.block_node;
+    }
+    if(aux.line_node->operator_node->argument_node_1->argument_node_type == input_argument_type){
+        if(in < aux.line_node->operator_node->argument_node_1->input_variable.n){
+            in = aux.line_node->operator_node->argument_node_1->input_variable.n;
+        }
+    }
+    if(aux.line_node->operator_node->operator_node_type == binary_operator_type && aux.line_node->operator_node->argument_node_2->argument_node_type == input_argument_type){
+        if(in < aux.line_node->operator_node->argument_node_2->input_variable.n){
+            in = aux.line_node->operator_node->argument_node_2->input_variable.n;
+        }
+    }
+    return in;
+}
+
+int getOutputProcesor(const block_node* block_node){
+    unsigned int out = 0;
+    struct block_node aux;
+    aux = *block_node;
+    while(aux.block_node_type != single_line_block_type){
+        if(aux.line_node->line_node_type == exit_assigment_type){
+            if(out < aux.line_node->exit_var_node->exit_var_index.n){
+                out = aux.line_node->exit_var_node->exit_var_index.n;
+            }
+        }
+        aux = *aux.block_node;
+    }
+    if(aux.line_node->line_node_type == exit_assigment_type){
+        if(out < aux.line_node->exit_var_node->exit_var_index.n){
+            out = aux.line_node->exit_var_node->exit_var_index.n;
+        }
+    }
+    return out;
+}
+
+boolean checkInputOutput(const input_node* input, const connection_node* conection){
+    unsigned  int in = input->integer.n;
+    unsigned int var = 0;
+    group_aux_node group_aux_node;
+    arrow_node aux  = *conection->arrow_node;
+    LogDebug("gruop aux = %d", aux.arrow_node_type);
+    while(aux.arrow_node_type != output_identifier_type){
+        LogDebug("gruop aux = %d", aux.arrow_node_type);
+        switch (aux.arrow_node_type) {
+            case single_identifier_type:
+                if(in < get_input_proc(aux.identifier.text)){
+                    return false;
+                }
+                in = get_output_proc(aux.identifier.text);
+                aux = *aux.arrow_node;
+                break;
+            case group_identifier_type:
+                if(in < get_input_proc(aux.group_node->identifier.text)){
+                    return false;
+                }
+                var = get_output_proc(aux.group_node->identifier.text);
+                group_aux_node = *aux.group_node->group_aux_node;
+                while(group_aux_node.group_aux_node_type != last_group_aux_type){
+                    if(in < get_input_proc(group_aux_node.identifier.text)){
+                        return false;
+                    }
+                    var += get_output_proc(group_aux_node.identifier.text);
+                    printf("var es: %d\n", var);
+                    group_aux_node = *group_aux_node.group_aux_node;
+                }
+                if(in < get_input_proc(group_aux_node.identifier.text)){
+                    return false;
+                }
+                var += get_output_proc(group_aux_node.identifier.text);
+                in = var;
+                aux = *aux.arrow_node;
+                break;
+            case output_identifier_type:
+                break;
+            case identifier_end_type:
+                aux = *aux.new_line_arrow_node->arrow_node;
+                in = 1024;
+                break;
+            case group_identifier_end_type:
+                in = 1024;
+                break;
+        }
+        printf("input es: %d\n", in);
+    }
+    return true;
 }

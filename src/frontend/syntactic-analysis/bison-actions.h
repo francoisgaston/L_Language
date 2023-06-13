@@ -60,5 +60,4 @@ group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, 
 group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier);
 var_identifier_node * newVariableIdentifier(const text_t identifier);
 arrow_node * IdentifierEndArrowAction(const var_identifier_node* identifier, const new_line_arrow_node * newLineArrow);
-boolean checkInputOutput(const arrow_node * arrow);
 #endif

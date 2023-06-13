@@ -7,7 +7,7 @@
 
 static symbol_table* symbol_table_info;
 
-void add_data_table_symbol(char *name, int columns, bool is_proc);
+void add_data_table_symbol(char *name, int input, int output, bool is_proc);
 
 
 void init_symbol_table(){
@@ -37,12 +37,12 @@ void destroy_symbol_table(){
     free(symbol_table);
 }
 
-void add_variable_symbol_table(char * name, int column) {
-    add_data_table_symbol(name, column, false);
+void add_variable_symbol_table(char * name) {
+    add_data_table_symbol(name,0, 0, false);
 }
 
-void add_proc_symbol_table(char * name, int columns){
-    add_data_table_symbol(name, columns, true);
+void add_proc_symbol_table(char * name, int input, int output){
+    add_data_table_symbol(name, input, output, true);
 }
 
 void create_scope(){
@@ -78,7 +78,26 @@ bool exists_proc_symbol_table(char * name){
     return false;
 }
 
-void add_data_table_symbol(char *name, int columns, bool is_proc){
+int get_input_proc(char * name){
+    for(int i=0; i<symbol_table_info->variables_count; i++){
+        if(symbol_table_info->variables_array[i]->is_proc && strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
+            return symbol_table_info->variables_array[i]->input;
+        }
+    }
+    return false;
+}
+
+int get_output_proc(char * name){
+    for(int i=0; i<symbol_table_info->variables_count; i++){
+        if(symbol_table_info->variables_array[i]->is_proc && strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
+            return symbol_table_info->variables_array[i]->output;
+        }
+    }
+    return false;
+}
+
+
+void add_data_table_symbol(char *name, int input, int output, bool is_proc){
     if(symbol_table_info->variables_count == symbol_table_info->array_lenght){
         symbol_table_info->array_lenght+=CHUNK;
         symbol_table_info->variables_array = realloc(symbol_table_info->variables_array, symbol_table_info->array_lenght);
@@ -90,7 +109,8 @@ void add_data_table_symbol(char *name, int columns, bool is_proc){
         exit(1);
     }
     symbol_table_info->variables_array[symbol_table_info->variables_count]->name= name;
-    symbol_table_info->variables_array[symbol_table_info->variables_count]->columns=columns;
+    symbol_table_info->variables_array[symbol_table_info->variables_count]->input=input;
+    symbol_table_info->variables_array[symbol_table_info->variables_count]->output=output;
     symbol_table_info->variables_array[symbol_table_info->variables_count]->is_proc = is_proc;
     symbol_table_info->variables_array[symbol_table_info->variables_count]->scope=symbol_table_info->scopes[symbol_table_info->index_scope];
     symbol_table_info->variables_count++;
@@ -98,6 +118,8 @@ void add_data_table_symbol(char *name, int columns, bool is_proc){
     for(int i=0; i<symbol_table_info->variables_count; i++){
         printf("nombre: %s:\n", symbol_table_info->variables_array[i]->name);
         printf("scope: %d\n\n\n", symbol_table_info->variables_array[i]->scope);
+        printf("input: %d\n\n\n", symbol_table_info->variables_array[i]->input);
+        printf("output: %d\n\n\n", symbol_table_info->variables_array[i]->output);
     }
 }
 

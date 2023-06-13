@@ -10,7 +10,8 @@
 typedef struct{
     char * name;
     int scope;
-    int columns;
+    int input;
+    int output;
     bool is_proc;
 } variable_info;
 
@@ -23,14 +24,17 @@ typedef struct{
     int scopes_symbol;
 } symbol_table;
 
+int get_input_proc(char * name);
+
+int get_output_proc(char * name);
 
 void init_symbol_table();
 
 void destroy_symbol_table();
 
-void add_variable_symbol_table(char * name, int value);
+void add_variable_symbol_table(char * name);
 
-void add_proc_symbol_table(char * name, int value);
+void add_proc_symbol_table(char * name, int input, int output);
 
 bool exists_variable_symbol_table(char * name);
 
