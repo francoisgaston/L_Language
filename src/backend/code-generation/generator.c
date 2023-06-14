@@ -4,7 +4,8 @@
 #include "template.h"
 #include <string.h>
 #include <ctype.h>
-// #define CODE_TEMPLATE "import csv\nimport sys\n\ndef AND(a, b):\n\treturn a & b\n\ndef OR(a, b):\n\treturn a | b\n\ndef NOT(a):\n\treturn int(not a)\n\ndef XOR(a, b):\n\treturn int(bool(a) ^ bool(b))\n\ndef NAND(a, b):\n\treturn int(not (a & b))\n\ndef NOR(a, b):\n\treturn int(not (a | b))\n\ndef bitarr_to_str(bitarr):\n\taux = ''\n\tfor bit in bitarr:\n\t\taux += str(bit)\n\treturn aux\n\n"
+#include <stdlib.h>
+#include "../support/garbage_collector.h"
 
 /**
  * Implementación de "generator.h".
@@ -118,6 +119,7 @@ static void generateLineNode(const line_node* line_node){
 	LogDebug("Entre a generateLineNode");
 	switch (line_node->line_node_type){
 		case local_assigment_type:
+            output("var_");
 			output(line_node->identifier.text);
 			output(" = ");
 			generateOperatorNode(line_node->operator_node);
@@ -176,6 +178,7 @@ static void generateArgumentNode(const argument_node* argument_node){
 	LogDebug("Entre a generateArgumentNode");
 	switch(argument_node->argument_node_type) {
 		case identifier_argument_type:
+            output("var_");
 			output(argument_node->identifier.text);
 			break;
 		case input_argument_type:
@@ -211,14 +214,7 @@ static void generateInputNode(const input_node* input_node){
 	output_ATAB_LF("for bit in row[0]:");
 	output_LF("bit = int(bit)");
 	output_RTAB_LF("input.append(bit)");
-	output("if(len(input) > ");
-	output(input_node->integer.text);
-	output_ATAB_LF("): ");
-	output("print('Too many bits in the array, must be ");
-	output(input_node->integer.text);
-	output_LF("')");
-	output_RTAB_LF("exit(1)");
-	output("elif(len(input) < ");
+	output("if(len(input) < ");
 	output(input_node->integer.text);
 	output_ATAB_LF("): ");
 	output("print('Missing bits in the array, must be ");
@@ -273,6 +269,7 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 		break;
 	case identifier_end_type:
 		LogDebug("Entre en identifier_end_type");
+        output("var_");
 		output(arrow_node->identifier.text);
 		output_LF(" = output.copy()");
 		generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
@@ -298,7 +295,15 @@ static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_n
 		break;
 	case single_identifier_new_line_type:
 		LogDebug("Entre en single_identifier_new_line_type");
-		generateArrowNode(new_line_arrow_node->arrow_node, new_line_arrow_node->identifier.text);
+        int len = strlen(new_line_arrow_node->identifier.text);
+        char*  aux = Calloc(len+6,sizeof(char));
+        if(aux == NULL) {
+            LogError("Cannot generate SingleIdentifierNewLine Node");
+            Free_All();
+            exit(1);
+        }
+        snprintf(aux,len+5,"var_%s", new_line_arrow_node->identifier.text);
+		generateArrowNode(new_line_arrow_node->arrow_node, aux);
 		break;
 	case group_identifier_new_line_type:
 		LogDebug("Entre en group_identifier_new_line_type");
@@ -314,6 +319,7 @@ static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_n
 static void generateGroupVarNode(const group_var_node* group_var_node){
     LogDebug("Entre en generateGroupVarNode");
     output("union( ");
+    output("var_");
     output(group_var_node->identifier.text);
     output(", ");
     generateGroupAuxVarNode(group_var_node->group_aux_node);
@@ -323,11 +329,13 @@ static void generateGroupAuxVarNode(const group_aux_var_node * group_aux_var_nod
     switch(group_aux_var_node->group_aux_node_type){
         case last_group_aux_type:
             LogDebug("Entre en last_group_aux_type");
+            output("var_");
             output(group_aux_var_node->identifier.text);
             output_LF(" )");
             break;
         case common_group_aux_type:
             LogDebug("Entre en common_group_aux_type");
+            output("var_");
             output(group_aux_var_node->identifier.text);
             output_LF(" , ");
             generateGroupAuxVarNode(group_aux_var_node->group_aux_node);

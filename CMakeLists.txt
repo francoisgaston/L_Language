@@ -70,6 +70,7 @@ add_executable(Compiler
 	src/frontend/lexical-analysis/flex-scanner.c
 	src/frontend/syntactic-analysis/bison-actions.c
 	src/frontend/syntactic-analysis/bison-parser.c
+	src/backend/support/garbage_collector.c
 	# Agregar otros archivos *.c (si no se incluyen, no se compilan).
 	# ...
 )

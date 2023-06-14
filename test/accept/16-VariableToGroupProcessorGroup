@@ -1,0 +1,26 @@
+proc A {
+    aux_1 = and($0, $2);
+    aux_2 = and($3, $1);
+    #0 = not(aux_1);
+    #1 = or($0, aux_2);
+};
+
+proc B {
+    aux_1 = xnor($2, $1);
+    aux_2 = and($0, $5);
+    aux_3 = xor($3, $4);
+    #0 = not(aux_1);
+    #1 = not(aux_2);
+    #2 = not(aux_3);
+    #3 = and($2, $4);
+};
+
+proc C {
+    aux_1 = and($0, $1);
+    aux_2 = or($2, $3);
+    #0 = and(aux_1, aux_2);
+};
+
+INPUT(6);
+INPUT -> B -> aux_1;
+aux_1 -> {A, C} -> OUTPUT;

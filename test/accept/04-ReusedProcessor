@@ -31,6 +31,6 @@ INPUT (4);
 INPUT -> A -> pepe;
 pepe -> B1 -> aux_b1;
 pepe -> B2 -> aux_b2;
-( aux_b1, aux_b2 ) -> output;
+( aux_b1, aux_b2 ) -> A -> B1 ->output;
 
 

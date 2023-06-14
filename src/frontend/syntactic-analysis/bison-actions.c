@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../backend/code-generation/symbol-table.h"
+#include "../../backend/support/garbage_collector.h"
 
 int getInputProcesor(const block_node* block_node);
 int getOutputProcesor(const block_node* block_node);
@@ -104,8 +105,13 @@ int ProgramGrammarAction(const program_node* program_node) {
 
 program_node* ProcessorAdditionAction(const processor_node * proc, const program_node * program){
 	LogDebug("\tProcessorAdditionAction(%p,%p)", proc, program);
-	program_node* ans = (program_node*) calloc(1,sizeof(program_node));
-	ans->program_node_type = processor_node_type;
+	program_node* ans = (program_node*) Calloc(1,sizeof(program_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Program node");
+        Free_All();
+        exit(1);
+    }
+    ans->program_node_type = processor_node_type;
 	ans->processor_node = proc;
 	ans-> program_node = program;
 	return ans;
@@ -115,10 +121,16 @@ program_node * ConnectionDefinitionAction(const input_node* input, const connect
 	LogDebug("\tConnectionDefinitionAction(%p, %p)", input, conection);
     if(!checkInputOutput(input, conection)){
         LogError("No coinciden input y output");
+        Free_All();
         exit(1);
     }
-	program_node* ans = (program_node*) calloc(1,sizeof(program_node));
-	ans->program_node_type = connection_node_type;
+	program_node* ans = (program_node*) Calloc(1,sizeof(program_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Program node");
+        Free_All();
+        exit(1);
+    }
+    ans->program_node_type = connection_node_type;
 	ans->connection_node = conection;
 	ans-> input_node = input;
 	return ans;	
@@ -128,29 +140,45 @@ processor_node * ProcessorDefinitionAction(const text_t identifier,const block_n
 	LogDebug("ProcessorDefinitionAction(%p,%p)",identifier, block_node);
 	//Generar y check de la variable en la tabla
     if(exists_proc_symbol_table(identifier.text)){
-        LogError("Variable %s ya fue inicializada\n", identifier.text);
+        LogError("Variable %s ya fue inicializada", identifier.text);
+        Free_All();
         exit(1);
     }
     int input = getInputProcesor(block_node);
     int output = getOutputProcesor(block_node);
     add_proc_symbol_table(identifier.text, input, output);
-    processor_node* ans = (processor_node*) calloc(1,sizeof(processor_node));
-	ans->block_node = block_node;
+    processor_node* ans = (processor_node*) Calloc(1,sizeof(processor_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Processor node");
+        Free_All();
+        exit(1);
+    }
+    ans->block_node = block_node;
 	ans->identifier = identifier;
 	return ans;
 }
 block_node * MultiLineBlockDefinitionAction(const line_node* line_node,const block_node* block){
 	LogDebug("MultiLineBlockDefinitionAction(%p, %p)", line_node, block);
-	block_node* ans = (block_node*) calloc(1,sizeof(block_node));
-	ans->block_node_type = multi_line_block_type;
+	block_node* ans = (block_node*) Calloc(1,sizeof(block_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Block node");
+        Free_All();
+        exit(1);
+    }
+    ans->block_node_type = multi_line_block_type;
 	ans->line_node = line_node;
 	ans->block_node = block;
 	return ans;
 }
 block_node * SingleLineBlockDefinitionAction(const line_node * line){
 	LogDebug("SingleLineBlockDefinitionAction(%p)", line);
-	block_node* ans = (block_node*) calloc(1,sizeof(block_node));
-	ans->block_node_type = single_line_block_type;
+	block_node* ans = (block_node*) Calloc(1,sizeof(block_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Block node");
+        Free_All();
+        exit(1);
+    }
+    ans->block_node_type = single_line_block_type;
 	ans->line_node = line;
 	return ans;
 }
@@ -159,24 +187,39 @@ line_node * LocalVariableAssignmentAction(const text_t identifier,const operator
     if(!exists_variable_symbol_table(identifier.text)){
         add_variable_symbol_table(identifier.text);
     }
-    line_node* ans = (line_node*) calloc(1,sizeof(line_node));
-	ans->line_node_type = local_assigment_type;
+    line_node* ans = (line_node*) Calloc(1,sizeof(line_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Line node");
+        Free_All();
+        exit(1);
+    }
+    ans->line_node_type = local_assigment_type;
 	ans->identifier = identifier;
 	ans->operator_node = operator;
 	return ans;
 }
 line_node * ExitVariableAssignmentAction(const exit_var_node* exit_var_node,const operator_node* operator){
 	LogDebug("ExitVariableAssignmentAction(%p, %p)", exit_var_node, operator);
-	line_node* ans = (line_node*) calloc(1,sizeof(line_node));
-	ans->line_node_type = exit_assigment_type;
+	line_node* ans = (line_node*) Calloc(1,sizeof(line_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Line node");
+        Free_All();
+        exit(1);
+    }
+    ans->line_node_type = exit_assigment_type;
 	ans->operator_node = operator;
 	ans->exit_var_node = exit_var_node;
 	return ans;
 }
 exit_var_node * ExitVariableDefinitionAction(const number_t exit_var_number){
 	LogDebug("ExitVariableDefinitionAction(%d)", exit_var_number);
-	exit_var_node* ans = (exit_var_node*) calloc(1,sizeof(exit_var_node));
-	ans->exit_var_index = exit_var_number;
+	exit_var_node* ans = (exit_var_node*) Calloc(1,sizeof(exit_var_node));
+    if(ans == NULL) {
+        LogError("Cannot generate ExitVar node");
+        Free_All();
+        exit(1);
+    }
+    ans->exit_var_index = exit_var_number;
 	return ans;
 }
 operator_node * BinaryOperationAction(const binary_operator_t binary_op, const argument_node * arg1, const argument_node * arg2) {
@@ -184,8 +227,13 @@ operator_node * BinaryOperationAction(const binary_operator_t binary_op, const a
 	if(binary_op.type == UNDEF_OP) {
 		LogError("UnknownBinaryOperator: %s", binary_op.op);
 	}
-	operator_node * op_node = (operator_node *) calloc(1, sizeof(operator_node));
-	op_node->operator_node_type = binary_operator_type;
+	operator_node * op_node = (operator_node *) Calloc(1, sizeof(operator_node));
+    if(op_node == NULL) {
+        LogError("Cannot generate Operator node");
+        Free_All();
+        exit(1);
+    }
+    op_node->operator_node_type = binary_operator_type;
 	op_node->binary_operator = binary_op;
 	op_node->argument_node_1 = arg1;
 	op_node->argument_node_2 = arg2;
@@ -196,8 +244,13 @@ operator_node * UnaryOperationAction(const unary_operator_t unary_op, const argu
 	if(unary_op.type == UNDEF_OP) {
 		LogError("UnknownUnaryOperator: %s", unary_op.op);
 	}
-	operator_node * op_node = (operator_node *) calloc(1, sizeof(operator_node));
-	op_node->operator_node_type = unary_operator_type;
+	operator_node * op_node = (operator_node *) Calloc(1, sizeof(operator_node));
+    if(op_node == NULL) {
+        LogError("Cannot generate Operator node");
+        Free_All();
+        exit(1);
+    }
+    op_node->operator_node_type = unary_operator_type;
 	op_node->unary_operator = unary_op;
 	op_node->argument_node_1 = arg;
 	return op_node;
@@ -205,53 +258,85 @@ operator_node * UnaryOperationAction(const unary_operator_t unary_op, const argu
 argument_node * IdentifierArgumentAction(const text_t identifier){
 	LogDebug("IdentifierArgumentAction(%p)", identifier);
     if(!exists_variable_symbol_table(identifier.text)){
-        LogError("Variable %s no fue declarada\n", identifier.text);
+        LogError("Variable %s no fue declarada", identifier.text);
+        Free_All();
         exit(1);
     }
-	argument_node* ans = (argument_node*) calloc(1,sizeof(argument_node));
-	ans->argument_node_type = identifier_argument_type;
+	argument_node* ans = (argument_node*) Calloc(1,sizeof(argument_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Argument node");
+        Free_All();
+        exit(1);
+    }
+    ans->argument_node_type = identifier_argument_type;
 	ans->identifier = identifier;
 	return ans;
 }
 
 argument_node * InputVariableArgumentAction(const number_t input_number) {
 	LogDebug("InputVariableArgumentAction(%d)", input_number);
-	argument_node * a_node = (argument_node *) calloc(1, sizeof(argument_node));
-	a_node->argument_node_type = input_argument_type;
+	argument_node * a_node = (argument_node *) Calloc(1, sizeof(argument_node));
+    if(a_node == NULL) {
+        LogError("Cannot generate Argument node");
+        Free_All();
+        exit(1);
+    }
+    a_node->argument_node_type = input_argument_type;
 	a_node->input_variable = input_number;
 	return a_node;
 }
 
 argument_node * ConstantArgumentAction(const boolean_t value){
 	LogDebug("ConstantArgumentAction(%d)", value.value);
-	argument_node* ans = (argument_node*) calloc(1,sizeof(argument_node));
-	ans->argument_node_type = constant_argument_type;
+	argument_node* ans = (argument_node*) Calloc(1,sizeof(argument_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Argument node");
+        Free_All();
+        exit(1);
+    }
+    ans->argument_node_type = constant_argument_type;
 	ans->constant_value = value;
 	return ans;
 }
 
 input_node * InputCountDefinitionAction(const number_t input_size){
 	LogDebug("InputCountDefinitionAction(%d)", input_size.n);
-	input_node* ans = (input_node*) calloc(1,sizeof(input_node));
-	ans->integer = input_size;
+	input_node* ans = (input_node*) Calloc(1,sizeof(input_node));
+    if(ans == NULL) {
+        LogError("Cannot generate Input node");
+        Free_All();
+        exit(1);
+    }
+    ans->integer = input_size;
 	return ans;
 }
 
 connection_node * ConnectionBlockDefinitionAction(const arrow_node * arrow) {
 	LogDebug("ConnectionBlockDefinitionAction(%p)", arrow);
-	connection_node * node = (connection_node *) calloc(1, sizeof(connection_node));
-	node->arrow_node = arrow;
+	connection_node * node = (connection_node *) Calloc(1, sizeof(connection_node));
+    if(node == NULL) {
+        LogError("Cannot generate Connection node");
+        Free_All();
+        exit(1);
+    }
+    node->arrow_node = arrow;
 	return node;
 }
 
 arrow_node * SingleIdentifierArrowAction(const text_t identifier, const arrow_node * arrow) {
 	LogDebug("SingleIdentifierArrowAction(%s, %p)", identifier.text, arrow);
     if(!exists_proc_symbol_table(identifier.text)){
-        LogError("Procesador %s no inicializado\n", identifier.text);
+        LogError("Procesador %s no inicializado", identifier.text);
+        Free_All();
         exit(1);
     }
-	arrow_node * a_node = (arrow_node *) calloc(1, sizeof(arrow_node));
-	a_node->identifier = identifier;
+	arrow_node * a_node = (arrow_node *) Calloc(1, sizeof(arrow_node));
+    if(a_node == NULL) {
+        LogError("Cannot generate Arrow node");
+        Free_All();
+        exit(1);
+    }
+    a_node->identifier = identifier;
 	a_node->arrow_node = arrow;
 	a_node->arrow_node_type = single_identifier_type;
 	return a_node;
@@ -259,8 +344,13 @@ arrow_node * SingleIdentifierArrowAction(const text_t identifier, const arrow_no
 
 arrow_node * GroupIdentifierArrowAction(const group_node * group, const arrow_node * arrow) {
 	LogDebug("GroupIdentifierArrowAction(%p, %p)", group, arrow);
-	arrow_node * a_node = (arrow_node *) calloc(1, sizeof(arrow_node));
-	a_node->arrow_node = arrow;
+	arrow_node * a_node = (arrow_node *) Calloc(1, sizeof(arrow_node));
+    if(a_node == NULL) {
+        LogError("Cannot generate Arrow node");
+        Free_All();
+        exit(1);
+    }
+    a_node->arrow_node = arrow;
 	a_node->group_node = group;
 	a_node->arrow_node_type = group_identifier_type;
 	return a_node;
@@ -268,59 +358,96 @@ arrow_node * GroupIdentifierArrowAction(const group_node * group, const arrow_no
 
 arrow_node * OutputEndArrowAction() {
 	LogDebug("OutputEndArrowAction()");
-	arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
-	node->arrow_node_type = output_identifier_type;
+	arrow_node * node = (arrow_node *) Calloc(1, sizeof(arrow_node));
+    if(node == NULL) {
+        LogError("Cannot generate Arrow node");
+        Free_All();
+        exit(1);
+    }
+    node->arrow_node_type = output_identifier_type;
 	return node;
 }
 
 arrow_node * IdentifierEndArrowAction(const var_identifier_node * identifier, const new_line_arrow_node * newLineArrow) {
 	LogDebug("IdentifierEndArrowAction(%s, %p)", identifier->identifier.text, newLineArrow);
-    arrow_node * node = (arrow_node *) calloc(1, sizeof(arrow_node));
-	node->identifier = identifier->identifier;
+    arrow_node * node = (arrow_node *) Calloc(1, sizeof(arrow_node));
+    if(node == NULL) {
+        LogError("Cannot generate Arrow node");
+        Free_All();
+        exit(1);
+    }
+    node->identifier = identifier->identifier;
 	node->new_line_arrow_node = newLineArrow;
 	node->arrow_node_type = identifier_end_type;
 	return node;
 }
 arrow_node * GroupIdentifierEndArrowAction(const group_var_node * group,const new_line_arrow_node * newLineArrow){
 	LogDebug("GroupeIdentifierEndArrowAction(%p, %p)", group, newLineArrow);
-	arrow_node * arrow = (arrow_node*) calloc(1, sizeof(arrow_node));
-	arrow->arrow_node_type = group_identifier_end_type;
+	arrow_node * arrow = (arrow_node*) Calloc(1, sizeof(arrow_node));
+    if(arrow == NULL) {
+        LogError("Cannot generate Arrow node");
+        Free_All();
+        exit(1);
+    }
+    arrow->arrow_node_type = group_identifier_end_type;
 	arrow->new_line_arrow_node = newLineArrow;
 	arrow->group_var_node = group;
 	return arrow;
 }
 new_line_arrow_node * InputNewLineArrowAction(const arrow_node * arrow){
 	LogDebug("InputNewLineArrowAction(%p)", arrow);
-	new_line_arrow_node * new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node*));
-	new_line_arrow->new_line_arrow_node_type = input_new_line_type;
+	new_line_arrow_node * new_line_arrow = (new_line_arrow_node*) Calloc(1, sizeof(new_line_arrow_node*));
+    if(new_line_arrow == NULL) {
+        LogError("Cannot generate NewLineArrow node");
+        Free_All();
+        exit(1);
+    }
+    new_line_arrow->new_line_arrow_node_type = input_new_line_type;
 	new_line_arrow->arrow_node = arrow;
 	return new_line_arrow;
 }
 new_line_arrow_node * IdentifierNewLineArrowAction(const text_t identifier, const arrow_node * arrow){
 	LogDebug("IdentifierNewLineArrowAction(%p, %p)", identifier, arrow);
     if(!exists_variable_symbol_table(identifier.text)){
-        LogError("Variable %s no inicializada\n", identifier.text);
+        LogError("Variable %s no inicializada", identifier.text);
+        Free_All();
         exit(1);
     }
-	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node*));
-	new_line_arrow->new_line_arrow_node_type = input_argument_type;
+	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) Calloc(1, sizeof(new_line_arrow_node*));
+    if(new_line_arrow == NULL) {
+        LogError("Cannot generate NewLineArrow node");
+        Free_All();
+        exit(1);
+    }
+    new_line_arrow->new_line_arrow_node_type = input_argument_type;
 	new_line_arrow->identifier = identifier;
 	new_line_arrow->arrow_node = arrow;
 	return new_line_arrow;
 }
 new_line_arrow_node * GroupIdentifierNewLineArrowAction(const group_var_node * group,const arrow_node * arrow){
 	LogDebug("GroupIdentifierNewLineArrowAction(%p, %p)", group, arrow);
-	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) calloc(1, sizeof(new_line_arrow_node));
-	new_line_arrow->new_line_arrow_node_type = group_identifier_new_line_type;
+	new_line_arrow_node* new_line_arrow = (new_line_arrow_node*) Calloc(1, sizeof(new_line_arrow_node));
+    if(new_line_arrow == NULL) {
+        LogError("Cannot generate NewLineArrow node");
+        Free_All();
+        exit(1);
+    }
+    new_line_arrow->new_line_arrow_node_type = group_identifier_new_line_type;
 	new_line_arrow->group_var_node=group;
 	new_line_arrow->arrow_node=arrow;
 	return new_line_arrow;
 }
 group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
     LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
-    group_var_node * group = (group_var_node*) calloc(1, sizeof(group_var_node));
+    group_var_node * group = (group_var_node*) Calloc(1, sizeof(group_var_node));
+    if(group == NULL) {
+        LogError("Cannot generate GroupVar node");
+        Free_All();
+        exit(1);
+    }
     if(!exists_variable_symbol_table(identifier.text)){
-        LogError("Variable %s no inicializada\n", identifier.text);
+        LogError("Variable %s no inicializada", identifier.text);
+        Free_All();
         exit(1);
     }
     add_variable_symbol_table(identifier.text);
@@ -329,7 +456,12 @@ group_var_node * GroupDefinitionVariablesAction(const text_t identifier, const g
     return group;
 }
 group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, const group_aux_var_node * groupAux){
-    group_aux_var_node * group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
+    group_aux_var_node * group_aux = (group_aux_var_node*) Calloc(1, sizeof(group_aux_var_node));
+    if(group_aux == NULL) {
+        LogError("Cannot generate GroupAuxVar node");
+        Free_All();
+        exit(1);
+    }
     add_variable_symbol_table(identifier.text);
     group_aux->group_aux_node_type = common_group_aux_type;
     group_aux->group_aux_node = groupAux;
@@ -339,16 +471,22 @@ group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, 
 group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier){
     LogDebug("GroupAuxLastIdentifierVariableAction(%p)", identifier);
     add_variable_symbol_table(identifier.text);
-    group_aux_var_node* group_aux = (group_aux_var_node*) calloc(1, sizeof(group_aux_var_node));
+    group_aux_var_node* group_aux = (group_aux_var_node*) Calloc(1, sizeof(group_aux_var_node));
+    if(group_aux == NULL) {
+        LogError("Cannot generate GroupAuxVar node");
+        Free_All();
+        exit(1);
+    }
     group_aux->group_aux_node_type = last_group_aux_type;
     group_aux->identifier = identifier;
     return group_aux;
 }
 group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
 	LogDebug("GroupDefinitionAction(%p, %p)", identifier, groupAux);
-	group_node * group = (group_node*) calloc(1, sizeof(group_node));
+	group_node * group = (group_node*) Calloc(1, sizeof(group_node));
     if(!exists_proc_symbol_table(identifier.text)){
-        LogError("Procesador %s no inicializado\n", identifier.text);
+        LogError("Procesador %s no inicializado", identifier.text);
+        Free_All();
         exit(1);
     }
 	group->identifier = identifier;
@@ -356,7 +494,7 @@ group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node
 	return group;
 }
 group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
-	group_aux_node * group_aux = (group_aux_node*) calloc(1, sizeof(group_aux_node));
+	group_aux_node * group_aux = (group_aux_node*) Calloc(1, sizeof(group_aux_node));
 	group_aux->group_aux_node_type = common_group_aux_type;
 	group_aux->group_aux_node = groupAux;
 	group_aux->identifier = identifier;
@@ -364,15 +502,22 @@ group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_a
 }
 group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier){
 	LogDebug("ProcessorAdditionAction(%p)", identifier);
-	group_aux_node* group_aux = (group_aux_node*) calloc(1, sizeof(group_aux_node));
+	group_aux_node* group_aux = (group_aux_node*) Calloc(1, sizeof(group_aux_node));
 	group_aux->group_aux_node_type = last_group_aux_type;
 	group_aux->identifier = identifier;
 	return group_aux;
 }
 var_identifier_node * newVariableIdentifier(const text_t identifier){
     LogDebug("newVariableIdentifier(%p)", identifier);
-    var_identifier_node* group_aux = (var_identifier_node*) calloc(1, sizeof(var_identifier_node));
-    add_variable_symbol_table(identifier.text);
+    var_identifier_node* group_aux = (var_identifier_node*) Calloc(1, sizeof(var_identifier_node));
+    if(exists_proc_symbol_table(identifier.text)){
+        LogError("Procesador %s con el mismo nombre", identifier.text);
+        Free_All();
+        exit(1);
+    }
+    if(!exists_variable_symbol_table(identifier.text)){
+        add_variable_symbol_table(identifier.text);
+    }
     group_aux->identifier = identifier;
     return group_aux;
 }
@@ -447,6 +592,9 @@ boolean checkInputOutput(const input_node* input, const connection_node* conecti
             case group_identifier_end_type:
                 //Nunca deberia llegar
                 break;
+        }
+        if(!in){
+            return false;
         }
     }
     return true;

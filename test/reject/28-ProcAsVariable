@@ -1,0 +1,17 @@
+proc A {
+    #0 = AND($0, $3);
+    aux = OR($0, $1);
+    aux2 = XOR($2, $3);
+    #1 = AND(aux, aux2);
+};
+
+proc B {
+    #0 = AND($0, $3);
+    aux = OR($0, $1);
+    aux2 = XOR($2, $3);
+    #1 = AND(aux, aux2);
+};
+
+INPUT(4);
+INPUT -> A -> B -> A;
+A -> B -> OUTPUT;

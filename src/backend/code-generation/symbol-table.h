@@ -30,8 +30,6 @@ int get_output(char * name);
 
 void init_symbol_table();
 
-void destroy_symbol_table();
-
 void add_variable_symbol_table(char * name);
 
 void add_proc_symbol_table(char * name, int input, int output);
