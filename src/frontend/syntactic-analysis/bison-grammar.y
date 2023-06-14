@@ -27,9 +27,12 @@
 	argument_node * argument;
 	connection_node * connection;
 	arrow_node * arrow;
+	var_identifier_node * var_identifier;
 	new_line_arrow_node * new_line_arrow;
 	group_node * group;
 	group_aux_node * group_aux;
+	group_var_node * group_var;
+	group_aux_var_node * group_aux_var;
 
 	// Terminales.
 	token token;
@@ -60,6 +63,9 @@
 %token <token> OPEN_BRACES
 %token <token> CLOSE_BRACES
 
+%token <token> OPEN_BRACKET
+%token <token> CLOSE_BRACKET
+
 %token <token> COMMA
 %token <token> SEMICOLON
 
@@ -82,8 +88,11 @@
 %type <connection> connection
 %type <arrow> arrow
 %type <new_line_arrow> new_line_arrow
+%type <var_identifier> var_identifier
 %type <group> group
 %type <group_aux> group_aux
+%type <group_aux_var> group_aux_var
+%type <group_var> group_var
 
 
 
@@ -136,13 +145,23 @@ connection: INPUT arrow			{ $$ = ConnectionBlockDefinitionAction($2);}
 arrow: ARROW_OP IDENTIFIER arrow  										{ $$ = SingleIdentifierArrowAction($2, $3);}
 	| ARROW_OP OPEN_BRACES group CLOSE_BRACES arrow 					{ $$ = GroupIdentifierArrowAction($3,$5);}
 	| ARROW_OP OUTPUT SEMICOLON											{ $$ = OutputEndArrowAction();}
-	| ARROW_OP IDENTIFIER SEMICOLON new_line_arrow						{ $$ = IdentifierEndArrowAction($2,$4);}
-	| ARROW_OP OPEN_BRACES group CLOSE_BRACES SEMICOLON new_line_arrow	{ $$ = GroupIdentifierEndArrowAction($3,$6);}
+	| ARROW_OP var_identifier SEMICOLON new_line_arrow						{ $$ = IdentifierEndArrowAction($2,$4);}
+	| ARROW_OP OPEN_PARENTHESIS group_var CLOSE_PARENTHESIS SEMICOLON new_line_arrow	{ $$ = GroupIdentifierEndArrowAction($3,$6);}
 	;
 
-new_line_arrow: INPUT arrow 					{ $$ = InputNewLineArrowAction($2); }
-	| IDENTIFIER arrow							{ $$ = IdentifierNewLineArrowAction($1, $2);}
-	| OPEN_BRACES group CLOSE_BRACES arrow		{ $$ = GroupIdentifierNewLineArrowAction($2,$4);}
+var_identifier: IDENTIFIER                                              { $$ = newVariableIdentifier($1);}
+    ;
+
+new_line_arrow: INPUT arrow 					                        { $$ = InputNewLineArrowAction($2); }
+	| IDENTIFIER arrow							                        { $$ = IdentifierNewLineArrowAction($1, $2);}
+	| OPEN_PARENTHESIS group_var CLOSE_PARENTHESIS arrow		                { $$ = GroupIdentifierNewLineArrowAction($2,$4);}
+	;
+
+group_var: IDENTIFIER COMMA group_aux_var       {$$ = GroupDefinitionVariablesAction($1, $3);}
+    ;
+
+group_aux_var: IDENTIFIER COMMA group_aux_var	{ $$ = GroupAuxDefinitionVariablesAction($1, $3);}
+	| IDENTIFIER								{ $$ = GroupAuxLastIdentifierVariableAction($1);}
 	;
 
 group: IDENTIFIER COMMA group_aux				{ $$ = GroupDefinitionAction($1, $3);}

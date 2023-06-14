@@ -9,6 +9,7 @@ proc B {
     aux = NOT($0);
     aux2 = NAND($0, $1);
     #0 = XOR(aux, aux2);
+    #1 = BUFF($1);
 };
 
 input (4);

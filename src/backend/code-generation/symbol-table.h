@@ -4,13 +4,14 @@
 #include <stdbool.h>
 
 #define MAX_STATES 3
-#define CHUNK 20
+#define CHUNK 50
 #define INITIAL_SCOPE 0
 
 typedef struct{
     char * name;
     int scope;
-    int columns;
+    int input;
+    int output;
     bool is_proc;
 } variable_info;
 
@@ -23,14 +24,15 @@ typedef struct{
     int scopes_symbol;
 } symbol_table;
 
+int get_input(char * name);
+
+int get_output(char * name);
 
 void init_symbol_table();
 
-void destroy_symbol_table();
+void add_variable_symbol_table(char * name);
 
-void add_variable_symbol_table(char * name, int value);
-
-void add_proc_symbol_table(char * name, int value);
+void add_proc_symbol_table(char * name, int input, int output);
 
 bool exists_variable_symbol_table(char * name);
 
@@ -39,5 +41,7 @@ bool exists_proc_symbol_table(char * name);
 void create_scope();
 
 void remove_scope();
+
+void set_input_output_var(char* name, unsigned int value);
 
 #endif //COMPILER_SYMBOL_TABLE_H

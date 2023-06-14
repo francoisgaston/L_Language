@@ -11,7 +11,7 @@
 #define XNOR_PY "def XNOR(a, b):\n\treturn int(not (XOR(a, b)))"
 #define BUFF_PY "def BUFF(a):\n\treturn a"
 #define BITARR_TO_STR_PY "def bitarr_to_str(bitarr):\n\taux = ''\n\tfor bit in bitarr:\n\t\taux += str(bit)\n\treturn aux"
-#define UNION_PY "def union(* arrays):\n\tout = []\n\tfor array in arrays:\n\t\tfor elem in array:\n\t\t\tout.append(elem)\n\treturn out"
+#define UNION_PY "def union(* arrays):\n\tout = []\n\tfor array in arrays:\n\t\tfor elem in array:\n\t\t\tif elem != 2:\n\t\t\t\tout.append(elem)\n\treturn out"
 
 static void print_double_LF(outputADT out);
 static char * get_imports();

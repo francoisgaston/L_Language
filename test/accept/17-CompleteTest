@@ -1,0 +1,27 @@
+proc A {
+    aux = AND($0, $1);
+    aux2 = OR($2, $3);
+    #0 = BUFF(aux);
+    #1 = XOR(aux,aux2);
+};
+
+proc B {
+    #0 = AND($0, $1);
+    aux = OR($0, $1);
+    aux = NOT(aux);
+    #1 = NAND(aux,$0);
+};
+
+proc C {
+    #0 = buff($0);
+    #1 = buff($1);
+    #2 = buff($2);
+    #3 = buff($3);
+    #4 = buff($4);
+    #5 = buff($5);
+};
+
+INPUT (4);
+INPUT -> A -> B -> aux;
+INPUT -> {B, B} -> A -> aux2;
+(aux, aux2, aux2) -> C -> output;

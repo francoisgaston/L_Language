@@ -1,9 +1,12 @@
-#include "../../backend/support/logger.h"
-#include "flex-actions.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include "flex-actions.h"
+
 #include "../../backend/code-generation/symbol-table.h"
+#include "../../backend/support/logger.h"
+#include "../../backend/support/garbage_collector.h"
 
 
 binary_operator getBinaryOperator(const char * str, const int length) {
@@ -98,7 +101,12 @@ token FalsePatternAction(const char * lexeme) {
 
 token UnaryOperatorPatternAction(const char * lexeme, const int length) {
     LogDebug("UnaryOperatorPatternAction: '%s'.", lexeme);
-    char * text = (char *) calloc(length + 1, sizeof(char));
+    char * text = (char *) Calloc(length + 1, sizeof(char));
+    if(text == NULL) {
+        LogError("Cannot allocate memory for unary operator");
+        Free_All();
+        exit(1);
+    }
     strncpy(text, lexeme, length);
     yylval.unary_operator.op = text;
     yylval.unary_operator.type = getUnaryOperator(text, length);
@@ -107,7 +115,12 @@ token UnaryOperatorPatternAction(const char * lexeme, const int length) {
 
 token BinaryOperatorPatternAction(const char * lexeme, const int length) {
     LogDebug("BinaryOperatorPatternAction: '%s'.", lexeme);
-    char * text = (char *) calloc(length + 1, sizeof(char));
+    char * text = (char *) Calloc(length + 1, sizeof(char));
+    if(text == NULL) {
+        LogError("Cannot allocate memory for binary operator");
+        Free_All();
+        exit(1);
+    }
     strncpy(text, lexeme, length);
     yylval.binary_operator.op = text;
     yylval.binary_operator.type = getBinaryOperator(text, length);
@@ -152,6 +165,20 @@ token CloseBracesPatternAction(const char * lexeme) {
     return CLOSE_BRACES;
 }
 
+token OpenBracketPatternAction(const char * lexeme) {
+    LogDebug("CloseBracesPatternAction: '%s'.", lexeme);
+    yylval.token = CLOSE_BRACKET;
+    remove_scope();
+    return CLOSE_BRACES;
+}
+
+token CloseBracketPatternAction(const char * lexeme) {
+    LogDebug("CloseBracesPatternAction: '%s'.", lexeme);
+    yylval.token = OPEN_BRACKET;
+    remove_scope();
+    return CLOSE_BRACES;
+}
+
 token CommaPatternAction(const char * lexeme) {
     LogDebug("CommaPatternAction: '%s'.", lexeme);
     yylval.token = COMMA;
@@ -178,7 +205,12 @@ token HashSignPatternAction(const char * lexeme) {
 
 token VariableIdentifierPatternAction(const char * lexeme, const int length) {
     LogDebug("VariableIdentifierPatternAction: '%s' (length = %d).", lexeme, length);
-    char * text = (char *) calloc(length + 1, sizeof(char));
+    char * text = (char *) Calloc(length + 1, sizeof(char));
+    if(text == NULL) {
+        LogError("Cannot allocate memory for variable identifier");
+        Free_All();
+        exit(1);
+    }
     strncpy(text, lexeme, length);
     yylval.identifier.text = text;
     return IDENTIFIER;
@@ -186,7 +218,12 @@ token VariableIdentifierPatternAction(const char * lexeme, const int length) {
 
 token IntegerPatternAction(const char * lexeme, const int length) {
     LogDebug("IntegerPatternAction: '%s' (length = %d).", lexeme, length);
-    char * text = (char *) calloc(length + 1, sizeof(char));
+    char * text = (char *) Calloc(length + 1, sizeof(char));
+    if(text == NULL) {
+        LogError("Cannot allocate memory for integer pattern");
+        Free_All();
+        exit(1);
+    }
     strncpy(text, lexeme, length);
     yylval.number.n = (unsigned int) strtoul(text, NULL, 10);
     yylval.number.text = text;

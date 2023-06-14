@@ -1,11 +1,19 @@
 proc A {
     aux = AND($0, $1);
-    aux2 = NOT($3);
+    aux2 = NOT($2);
     //esto es un comentario
+    #1 = OR(aux, $2);
+    #4 = OR(aux, $2);
+};
 
-    #0 = OR(aux, $2);
+proc B {
+    aux = AND($0, $1);
+    aux2 = NOT($2);
+    //esto es un comentario
+    #0 = OR(aux, $4);
+    #1 = OR(aux, $2);
 };
 
 INPUT (3);
 
-INPUT -> A -> OUTPUT;
+INPUT -> A -> B -> OUTPUT;

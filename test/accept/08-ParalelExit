@@ -1,7 +1,7 @@
 PROC A1 {
     aux = and($0, $1);
     aux2 = or(aux, $2);
-    aux3 = and(aux2, $3);
+    aux3 = and(aux2, $2);
     #0 = xnor(aux, aux3);
     #1 = not(aux2);
 };
@@ -19,5 +19,5 @@ proc b {
 };
 
 INPUT (4);
-INPUT -> {A1, A2} -> {A3,A4};
-A3 -> OUTPUT;
+INPUT -> {A1, A2} -> A38;
+A38 -> A1 ->OUTPUT;

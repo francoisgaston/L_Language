@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "backend/code-generation/generator.h"
 #include "backend/code-generation/symbol-table.h"
-
+#include "backend/support/garbage_collector.h"
 
 // Estado de la aplicación.
 CompilerState state;
@@ -31,11 +31,13 @@ const int main(const int argumentCount, const char ** arguments) {
 			// inicial de la gramática satisfactoriamente.
 			if (state.succeed) {
 				//Funcion para llamar al back y el generate code
-				LogInfo("La compilacion fue exitosa.");
+				LogInfo("La compilación fue exitosa.");
 				generatorCode(state.program_node);
+                Free_All();
 			}
 			else {
-				LogError("Se produjo un error en la aplicacion.");
+				LogError("Se produjo un error en la aplicación.");
+                Free_All();
 				return -1;
 			}
 			break;

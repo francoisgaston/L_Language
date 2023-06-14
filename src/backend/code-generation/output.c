@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "../support/logger.h"
+#include "../support/garbage_collector.h"
 
 struct outputCDT {
     FILE * program;
@@ -9,9 +10,10 @@ struct outputCDT {
 };
 
 outputADT output_init(const char * file_path, const char * file_mode) {
-    outputADT out = calloc(1, sizeof(struct outputCDT));
+    outputADT out = Calloc(1, sizeof(struct outputCDT));
     if(out == NULL) {
         LogError("Cannot create outputADT");
+        Free_All();
         return out;
     }
     out->program = fopen(file_path, file_mode);
@@ -23,7 +25,7 @@ outputADT output_init(const char * file_path, const char * file_mode) {
     return out;
 
 error:
-    free(out);
+    Free_All();
     return NULL;
 }
 

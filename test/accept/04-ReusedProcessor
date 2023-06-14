@@ -22,10 +22,15 @@ proc B2 {
     #2 = and(que, chau);
 };
 
+proc C {
+    #0 = BUFF($4);
+    #1 = BUFF($4);
+};
+
 INPUT (4);
-input -> A -> aux_a;
-aux_a -> B1 -> aux_b1;
-aux_a -> B2 -> aux_b2;
-{ aux_b1, aux_b2 } -> output;
+INPUT -> A -> pepe;
+pepe -> B1 -> aux_b1;
+pepe -> B2 -> aux_b2;
+( aux_b1, aux_b2 ) -> A -> B1 ->output;
 
 

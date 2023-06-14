@@ -6,6 +6,6 @@ proc A1 {
     #0 = OR(aux, $2);
 };
 
-INPUT (3);
+INPUT (4);
 
 INPUT -> A1 -> OUTPUT;

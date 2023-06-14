@@ -32,5 +32,5 @@ proc A {
     #0 = OR(aux, $2);
 };
 
-INPUT(2);
+INPUT(3);
 INPUT -> A -> OUTPUT;
