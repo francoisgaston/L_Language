@@ -205,13 +205,10 @@ static void generateInputNode(const input_node* input_node){
 	reset_tab(output_info);
 	new_line(output_info);
 	output_ATAB_LF("if __name__ == '__main__':");
-	output_LF("read_file = open(sys.argv[1], 'r')");
-	output_LF("write_file = open(sys.argv[2], 'w')");
-	output_LF("csvreader = csv.reader(read_file)");
-	output_LF("csvwriter = csv.writer(write_file)");
-	output_ATAB_LF("for row in csvreader:");
+	output_ATAB_LF("for line in fileinput.input():");
+    output_LF("line = line.rstrip()");
 	output_LF("input = []");
-	output_ATAB_LF("for bit in row[0]:");
+	output_ATAB_LF("for bit in line:");
 	output_LF("bit = int(bit)");
 	output_RTAB_LF("input.append(bit)");
 	output("if(len(input) < ");
@@ -219,12 +216,11 @@ static void generateInputNode(const input_node* input_node){
 	output_ATAB_LF("): ");
 	output("print('Missing bits in the array, must be ");
 	output(input_node->integer.text);
-	output_LF("')");
+	output_LF("', file = sys.stderr)");
 	output_RTAB_LF("exit(1)");
 	output_LF("output = main_proc(input)");
-	output_LF("input_str = bitarr_to_str(input)");
 	output_LF("output_str = bitarr_to_str(output)");
-	output_LF("csvwriter.writerow([input_str, output_str])");
+	output_LF("print(output_str)");
 	reduce_tab(output_info);
 
 }
