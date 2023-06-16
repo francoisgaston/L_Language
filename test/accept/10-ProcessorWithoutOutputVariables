@@ -1,9 +1,0 @@
-proc A {
-    aux = AND($0, $3);
-    aux2 = OR($0, $1);
-    aux3 = XOR($2, $3);
-    aux4 = AND(aux, aux2);
-};
-
-INPUT (4);
-INPUT -> A -> OUTPUT;

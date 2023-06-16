@@ -21,6 +21,11 @@ proc C {
     #0 = and(aux_1, aux_2);
 };
 
+proc D {
+    #0 = and($0, $1);
+    #1 = or($2, $0);
+};
+
 INPUT(6);
 INPUT -> B -> aux_1;
-aux_1 -> {A, C} -> OUTPUT;
+aux_1 -> {A, C} -> D -> OUTPUT;
