@@ -65,7 +65,7 @@ void generatorCode(const program_node * program_node, const char * filename){
         LogError("Invalid program_node");
         return;
     }
-    if (strcmp(filename, "") == 0) {
+    if (filename == NULL || strcmp(filename, "") == 0) {
         LogDebug("No se especifico un nombre de archivo, se utilizara el nombre por defecto: '%s'", DEFAULT_FILENAME);
         filename = DEFAULT_FILENAME;
     }

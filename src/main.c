@@ -32,7 +32,7 @@ const int main(const int argumentCount, const char ** arguments) {
 			if (state.succeed) {
 				//Funcion para llamar al back y el generate code
 				LogInfo("La compilación fue exitosa.");
-				generatorCode(state.program_node, arguments[1]);
+				generatorCode(state.program_node, argumentCount > 1 ? arguments[1] : NULL);
                 Free_All();
 			}
 			else {
