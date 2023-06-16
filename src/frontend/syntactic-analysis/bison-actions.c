@@ -611,9 +611,9 @@ unsigned int checkGroupIdentifier(const group_node * group_aux_node, unsigned  i
     if(in < get_input(group_aux_node->identifier.text)){
         return false;
     }
-    in = get_output(group_aux_node->identifier.text);
-    in += checkGroupAux(group_aux_node->group_aux_node, in);
-    return in;
+    int input = get_output(group_aux_node->identifier.text);
+    input += checkGroupAux(group_aux_node->group_aux_node, in);
+    return input;
 }
 
 unsigned int checkGroupAux(const group_aux_node* group_aux_node, unsigned int  in){
