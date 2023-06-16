@@ -27,3 +27,14 @@ Si se desea eliminar a la salida de logs cuando se ejecuta, se debe comentar la 
 ```c
 #define DEBUG true
 ```
+
+### Archivo de salida
+Es posible indicar el nombre del archivo donde se desea guardar la compilación.
+Para ello, se debe agregar un segundo parámetro al comando anterior, indicando el nombre del archivo de salida.
+```bash
+script/start.sh test/accept/01-SimpleCircuit out.py
+```
+En este caso, la compilación se guardará en el archivo `out.py`.
+<br>
+<br>
+Si no se indica el nombre del archivo de salida, se guardará en `salida.py` por defecto.
