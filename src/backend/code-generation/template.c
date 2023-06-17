@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include "template.h"
 
-#define IMPORTS "import csv\nimport sys"
+#define IMPORTS "import fileinput\nimport sys"
 #define AND_PY "def AND(a, b):\n\treturn a & b"
 #define OR_PY "def OR(a, b):\n\treturn a | b"
 #define NOT_PY "def NOT(a):\n\treturn int(not a)"
