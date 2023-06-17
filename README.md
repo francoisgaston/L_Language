@@ -23,7 +23,24 @@ Si se desea correr al compilador con un programa (como `test/accept/01-simplecir
 ```bash
 script/start.sh test/accept/01-SimpleCircuit
 ```
-Si se desea eliminar a la salida de logs cuando se ejecuta, se debe comentar la siguiente línea en `src/backend/support/logger.h`
+Si se quiere revisar los logs cuando se ejecuta, se debe descomentar la siguiente línea en `src/backend/support/logger.h`
 ```c
 #define DEBUG true
 ```
+
+
+## Utilizacion
+Si desea utilizar el codigo compilado, debe ingresar por entrada estandart texto en formato csv y recibirá la salida por la salida estandart.
+```bash
+script/start.sh test/accept/01-SimpleCircuit
+```
+### Archivo de salida
+Es posible indicar el nombre del archivo donde se desea guardar la compilación.
+Para ello, se debe agregar un segundo parámetro al comando anterior, indicando el nombre del archivo de salida.
+```bash
+script/start.sh test/accept/01-SimpleCircuit out.py
+```
+En este caso, la compilación se guardará en el archivo `out.py`.
+<br>
+<br>
+Si no se indica el nombre del archivo de salida, se guardará en `salida.py` por defecto.

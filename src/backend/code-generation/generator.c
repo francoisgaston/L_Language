@@ -37,9 +37,17 @@ void printError(char * err);
 char* strToupper(char* str);
 
 
-void generatorCode(const program_node * program_node){
+void generatorCode(const program_node * program_node, const char * filename){
 	LogDebug("Entre a generatorCode");
-	output_info = output_init("./salida.py", "w+");
+    if (program_node == NULL) {
+        LogError("Invalid program_node");
+        return;
+    }
+    if (filename == NULL || strcmp(filename, "") == 0) {
+        LogDebug("No se especifico un nombre de archivo, se utilizara el nombre por defecto: '%s'", DEFAULT_FILENAME);
+        filename = DEFAULT_FILENAME;
+    }
+	output_info = output_init(filename, "w+");
 	exec_template(output_info);
 	new_line(output_info);
     generateProgramNode(program_node);
