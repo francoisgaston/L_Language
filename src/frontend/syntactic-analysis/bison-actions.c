@@ -59,48 +59,6 @@ int ProgramGrammarAction(const program_node* program_node) {
 	return 0;
 }
 
-// int AdditionExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tAdditionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Add(leftValue, rightValue);
-// }
-
-// int SubtractionExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tSubtractionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Subtract(leftValue, rightValue);
-// }
-
-// int MultiplicationExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tMultiplicationExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Multiply(leftValue, rightValue);
-// }
-
-// int DivisionExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tDivisionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Divide(leftValue, rightValue);
-// }
-
-// int FactorExpressionGrammarAction(const int columns) {
-// 	LogDebug("\tFactorExpressionGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-// int ExpressionFactorGrammarAction(const int columns) {
-// 	LogDebug("\tExpressionFactorGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-// int ConstantFactorGrammarAction(const int columns) {
-// 	LogDebug("\tConstantFactorGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-// int IntegerConstantGrammarAction(const int columns) {
-// 	LogDebug("\tIntegerConstantGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-
-//NOSOTROS
 
 program_node* ProcessorAdditionAction(const processor_node * proc, const program_node * program){
 	LogDebug("\tProcessorAdditionAction(%p,%p)", proc, program);

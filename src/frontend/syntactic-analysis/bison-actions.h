@@ -10,26 +10,8 @@
  * adecuado que almacene la información requerida en el árbol de sintaxis
  * abstracta (i.e., el AST).
  */
-
 // Programa.
 int ProgramGrammarAction(const program_node* program_node);
-
-// // Expresión.
-// int AdditionExpressionGrammarAction(const int leftValue, const int rightValue);
-// int SubtractionExpressionGrammarAction(const int leftValue, const int rightValue);
-// int MultiplicationExpressionGrammarAction(const int leftValue, const int rightValue);
-// int DivisionExpressionGrammarAction(const int leftValue, const int rightValue);
-// int FactorExpressionGrammarAction(const int columns);
-
-// // Factores.
-// int ExpressionFactorGrammarAction(const int columns);
-// int ConstantFactorGrammarAction(const int columns);
-
-// // Constantes.
-// int IntegerConstantGrammarAction(const int columns);
-
-
-//NOSOTROS
 program_node * ProcessorAdditionAction(const processor_node * proc, const program_node * program);
 program_node * ConnectionDefinitionAction(const input_node* input, const connection_node* conection);
 processor_node * ProcessorDefinitionAction(const text_t identifier,const block_node* block_node);

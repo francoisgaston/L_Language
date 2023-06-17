@@ -1,7 +1,6 @@
 #include "backend/support/logger.h"
 #include "backend/support/shared.h"
 #include "frontend/syntactic-analysis/bison-parser.h"
-#include <stdio.h>
 #include "backend/code-generation/generator.h"
 #include "backend/code-generation/symbol-table.h"
 #include "backend/support/garbage_collector.h"
