@@ -34,10 +34,6 @@ En este caso, la compilación se guardará en el archivo `out.py`.
 <br>
 Si no se indica el nombre del archivo de salida, se guardará en `salida.py` por defecto.
 
-Si se quiere revisar los logs cuando se ejecuta, se debe descomentar la siguiente línea en `src/backend/support/logger.h`
-```c
-#define DEBUG true
-```
 ### Utilizacion del codigo compilado
 Para la utilizacion del codigo compilado resulta necesario ingresar por entrada estandart texto en formato csv con una entrada por fila.
 La salida del progrma se realizará por la salida estandart.
@@ -64,6 +60,10 @@ python3 salida.py < input.csv > output.csv
 Una utilidad que le da mucha potencia al lenguaje es la posibilidad de interconetar script previamente compilados mediante el uso de la terminal.
 ```bash
 python3 proc1.py < input.csv | python3 proc2.py > output.csv
+```
+Si se quiere activar los logs, se debe descomentar la siguiente línea en `src/backend/support/logger.h`
+```c
+#define DEBUG true
 ```
 <hr>
 
