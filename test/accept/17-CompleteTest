@@ -25,3 +25,5 @@ INPUT (4);
 INPUT -> A -> B -> aux;
 INPUT -> {B, B} -> A -> aux2;
 (aux, aux2, aux2) -> C -> output;
+
+
