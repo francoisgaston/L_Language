@@ -50,7 +50,7 @@ python3 salida.py < input.csv
 ```
 Ingresando de forma manual una entrada al programa
 ```bash
-echo "10101" | python3 salida.py
+printf "10101\n11111" | python3 salida.py
 ```
 Obteniendo la salida por la terminal del usuario
 ```bash
@@ -65,4 +65,17 @@ Una utilidad que le da mucha potencia al lenguaje es la posibilidad de intercone
 ```bash
 python3 proc1.py < input.csv | python3 proc2.py > output.csv
 ```
-Para 
+<hr>
+
+## Soporte
+
+En caso de necesitar información adicional o querer conocer detalles de la implementación, se sugiere acceder al repositorio de GitHub público del proyecto. Alternativamente, puede contactarse con cualquiera de los desarrolladores.
+
+### Link al repositorio público
+https://github.com/JoseMenta/TPE_TLA
+
+### Contacto de desarrolladores:
+
+* Axel Facundo Preiti Tasat: https://github.com/AxelPreitiT
+* Gastón Ariel Francois: https://github.com/francoisgaston
+* José Rodolfo Mentasti: https://github.com/JoseMenta
