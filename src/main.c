@@ -1,7 +1,6 @@
 #include "backend/support/logger.h"
 #include "backend/support/shared.h"
 #include "frontend/syntactic-analysis/bison-parser.h"
-#include <stdio.h>
 #include "backend/code-generation/generator.h"
 #include "backend/code-generation/symbol-table.h"
 #include "backend/support/garbage_collector.h"
@@ -23,7 +22,6 @@ const int main(const int argumentCount, const char ** arguments) {
 	// Compilar el programa de entrada.
 	LogInfo("Compilando...\n");
     init_symbol_table();
-    printf("SALIDA");
     const int result = yyparse();
 	switch (result) {
 		case 0:

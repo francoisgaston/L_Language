@@ -1,6 +1,5 @@
 #include "output.h"
 #include <stdint.h>
-#include <stdlib.h>
 #include "../support/logger.h"
 #include "../support/garbage_collector.h"
 
@@ -19,23 +18,17 @@ outputADT output_init(const char * file_path, const char * file_mode) {
     out->program = fopen(file_path, file_mode);
     if(out->program == NULL) {
         LogError("Cannot open file '%s' with mode '%s'", file_path, file_mode);
-        goto error;
+        Free_All();
+        return NULL;
     }
     out->tab_count = 0;
     return out;
-
-error:
-    Free_All();
-    return NULL;
 }
 
 void write_output(outputADT out, const char * str){
     if(out == NULL){
         LogError("Error in outADT");
     }
-    //for(int i=0; i!=out->tab_count; i++){
-    //    fprintf(out->program, "\t");
-    //}
     fprintf(out->program, "%s", str);
 }
 

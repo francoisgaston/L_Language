@@ -1,0 +1,8 @@
+proc A {
+    #0 = NOT($0);
+    #1 = NOT($3);
+};
+
+INPUT (7);
+INPUT -> A -> aux;
+aux2 -> OUTPUT;

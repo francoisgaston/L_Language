@@ -11,11 +11,8 @@
  * Implementación de "generator.h".
  */
 
-void Generator(int result) {
-	LogInfo("El resultado de la expresion computada es: '%d'.", result);
-}
-
 static outputADT output_info;
+//FUNCIONES PARA RECORRER EL ARBOL
 static void generateProgramNode(const program_node * program_node);
 static void generateProcessorNode(const processor_node* processor_node);
 static void generateBlockNode(const block_node* block_node);
@@ -29,35 +26,16 @@ static void generateArrowNode(const arrow_node* arrow_node,char* var);
 static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var);
 static void generateGroupNode(const group_node* group_node, char* var);
 static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_node, char* var);
-static void generateGroupVarNode(const group_var_node* new_line_arrow_node);
+static void generateGroupVarNode(const group_var_node* group_var_node);
 static void generateGroupAuxVarNode(const group_aux_var_node * group_aux_var_node);
-
+//FUNCIONES AUXILIARES
+void output(char * str);
+void output_LF(char * str);
+void output_ATAB_LF(char * str);
+void output_RTAB_LF(char * str);
+void printError(char * err);
 char* strToupper(char* str);
 
-void output(char * str){
-	write_output(output_info, str);
-}
-
-void output_LF(char * str) {
-	write_output(output_info, str);
-	new_line(output_info);
-}
-
-void output_ATAB_LF(char * str) {
-	write_output(output_info, str);
-	add_tab(output_info);
-	new_line(output_info);
-}
-
-void output_RTAB_LF(char * str) {
-	write_output(output_info, str);
-	reduce_tab(output_info);
-	new_line(output_info);
-}
-
-void printError(char * err) {
-	LogError("Invalid AST: '%s'", err);
-}
 
 void generatorCode(const program_node * program_node, const char * filename){
 	LogDebug("Entre a generatorCode");
@@ -94,7 +72,6 @@ static void generateProgramNode(const program_node * program_node){
 
 static void generateProcessorNode(const processor_node* processor_node){
 	LogDebug("Entre a generateProcessorNode");
-	//Definicion de la funcion para el procesador
 	output("def proc_");
 	output(processor_node->identifier.text);
 	output("(input):");
@@ -213,13 +190,10 @@ static void generateInputNode(const input_node* input_node){
 	reset_tab(output_info);
 	new_line(output_info);
 	output_ATAB_LF("if __name__ == '__main__':");
-	output_LF("read_file = open(sys.argv[1], 'r')");
-	output_LF("write_file = open(sys.argv[2], 'w')");
-	output_LF("csvreader = csv.reader(read_file)");
-	output_LF("csvwriter = csv.writer(write_file)");
-	output_ATAB_LF("for row in csvreader:");
+	output_ATAB_LF("for line in fileinput.input():");
+    output_LF("line = line.rstrip()");
 	output_LF("input = []");
-	output_ATAB_LF("for bit in row[0]:");
+	output_ATAB_LF("for bit in line:");
 	output_LF("bit = int(bit)");
 	output_RTAB_LF("input.append(bit)");
 	output("if(len(input) < ");
@@ -227,12 +201,11 @@ static void generateInputNode(const input_node* input_node){
 	output_ATAB_LF("): ");
 	output("print('Missing bits in the array, must be ");
 	output(input_node->integer.text);
-	output_LF("')");
+	output_LF("', file = sys.stderr)");
 	output_RTAB_LF("exit(1)");
 	output_LF("output = main_proc(input)");
-	output_LF("input_str = bitarr_to_str(input)");
 	output_LF("output_str = bitarr_to_str(output)");
-	output_LF("csvwriter.writerow([input_str, output_str])");
+	output_LF("print(output_str)");
 	reduce_tab(output_info);
 
 }
@@ -282,12 +255,6 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 		output_LF(" = output.copy()");
 		generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
 		break;
-	case group_identifier_end_type:
-        //LogDebug("Entre en group_identifier_end_type");
-        //generateGroupVarNode(arrow_node->group_var_node);
-        //generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
-		//ESTADO INVALIDO?
-		break;
 	default:
 		break;
 	}
@@ -303,7 +270,7 @@ static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_n
 		break;
 	case single_identifier_new_line_type:
 		LogDebug("Entre en single_identifier_new_line_type");
-        int len = strlen(new_line_arrow_node->identifier.text);
+        unsigned int len = strlen(new_line_arrow_node->identifier.text);
         char*  aux = Calloc(len+6,sizeof(char));
         if(aux == NULL) {
             LogError("Cannot generate SingleIdentifierNewLine Node");
@@ -383,7 +350,7 @@ static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var
 			output("(");	
 			output(var);
 			output("), ");
-			generateGroupAuxNode(group_aux_node, var);
+			generateGroupAuxNode(group_aux_node->group_aux_node, var);
 			break;
 		default:
 			printError("Invalid argument_node");
@@ -391,10 +358,36 @@ static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var
 	}
 }
 
+// FUNCIONES AUXILIARES
+void output(char * str){
+    write_output(output_info, str);
+}
+
+void output_LF(char * str) {
+    write_output(output_info, str);
+    new_line(output_info);
+}
+
+void output_ATAB_LF(char * str) {
+    write_output(output_info, str);
+    add_tab(output_info);
+    new_line(output_info);
+}
+
+void output_RTAB_LF(char * str) {
+    write_output(output_info, str);
+    reduce_tab(output_info);
+    new_line(output_info);
+}
+
+void printError(char * err) {
+    LogError("Invalid AST: '%s'", err);
+}
 
 char* strToupper(char* str) {
-  for(char *p=str; *p; p++){
-	 *p=toupper(*p);
-  }
-  return str;
+    for(char *p=str; *p; p++){
+        *p=toupper(*p);
+    }
+    return str;
 }
+

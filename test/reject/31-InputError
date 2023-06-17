@@ -1,7 +1,7 @@
 proc A {
-    #0 = OR($0, $1);
+    #0 = NOT($0);
+    #1 = NOT($3);
 };
 
 INPUT (2);
-
 INPUT -> A -> OUTPUT;

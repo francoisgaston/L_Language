@@ -3,9 +3,10 @@
 
 #include <stdbool.h>
 
-#define MAX_STATES 3
-#define CHUNK 50
 #define INITIAL_SCOPE 0
+#define MAX_STATES 3
+#define CHUNK 30
+
 
 typedef struct{
     char * name;

@@ -1,4 +1,3 @@
-#include "../../backend/domain-specific/calculator.h"
 #include "../../backend/support/logger.h"
 #include "bison-actions.h"
 #include <stdio.h>
@@ -60,48 +59,6 @@ int ProgramGrammarAction(const program_node* program_node) {
 	return 0;
 }
 
-// int AdditionExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tAdditionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Add(leftValue, rightValue);
-// }
-
-// int SubtractionExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tSubtractionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Subtract(leftValue, rightValue);
-// }
-
-// int MultiplicationExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tMultiplicationExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Multiply(leftValue, rightValue);
-// }
-
-// int DivisionExpressionGrammarAction(const int leftValue, const int rightValue) {
-// 	LogDebug("\tDivisionExpressionGrammarAction(%d, %d)", leftValue, rightValue);
-// 	return Divide(leftValue, rightValue);
-// }
-
-// int FactorExpressionGrammarAction(const int columns) {
-// 	LogDebug("\tFactorExpressionGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-// int ExpressionFactorGrammarAction(const int columns) {
-// 	LogDebug("\tExpressionFactorGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-// int ConstantFactorGrammarAction(const int columns) {
-// 	LogDebug("\tConstantFactorGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-// int IntegerConstantGrammarAction(const int columns) {
-// 	LogDebug("\tIntegerConstantGrammarAction(%d)", columns);
-// 	return columns;
-// }
-
-
-//NOSOTROS
 
 program_node* ProcessorAdditionAction(const processor_node * proc, const program_node * program){
 	LogDebug("\tProcessorAdditionAction(%p,%p)", proc, program);
@@ -462,6 +419,11 @@ group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, 
         Free_All();
         exit(1);
     }
+    if(!exists_variable_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado", identifier.text);
+        Free_All();
+        exit(1);
+    }
     add_variable_symbol_table(identifier.text);
     group_aux->group_aux_node_type = common_group_aux_type;
     group_aux->group_aux_node = groupAux;
@@ -470,10 +432,14 @@ group_aux_var_node * GroupAuxDefinitionVariablesAction(const text_t identifier, 
 }
 group_aux_var_node * GroupAuxLastIdentifierVariableAction(const text_t identifier){
     LogDebug("GroupAuxLastIdentifierVariableAction(%p)", identifier);
-    add_variable_symbol_table(identifier.text);
     group_aux_var_node* group_aux = (group_aux_var_node*) Calloc(1, sizeof(group_aux_var_node));
     if(group_aux == NULL) {
         LogError("Cannot generate GroupAuxVar node");
+        Free_All();
+        exit(1);
+    }
+    if(!exists_variable_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado", identifier.text);
         Free_All();
         exit(1);
     }
@@ -495,6 +461,11 @@ group_node * GroupDefinitionAction(const text_t identifier, const group_aux_node
 }
 group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_aux_node * groupAux){
 	group_aux_node * group_aux = (group_aux_node*) Calloc(1, sizeof(group_aux_node));
+    if(!exists_proc_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado", identifier.text);
+        Free_All();
+        exit(1);
+    }
 	group_aux->group_aux_node_type = common_group_aux_type;
 	group_aux->group_aux_node = groupAux;
 	group_aux->identifier = identifier;
@@ -503,6 +474,11 @@ group_aux_node * GroupAuxDefinitionAction(const text_t identifier, const group_a
 group_aux_node * GroupAuxLastIdentifierAction(const text_t identifier){
 	LogDebug("ProcessorAdditionAction(%p)", identifier);
 	group_aux_node* group_aux = (group_aux_node*) Calloc(1, sizeof(group_aux_node));
+    if(!exists_proc_symbol_table(identifier.text)){
+        LogError("Procesador %s no inicializado", identifier.text);
+        Free_All();
+        exit(1);
+    }
 	group_aux->group_aux_node_type = last_group_aux_type;
 	group_aux->identifier = identifier;
 	return group_aux;
@@ -611,7 +587,7 @@ unsigned int checkGroupIdentifier(const group_node * group_aux_node, unsigned  i
     if(in < get_input(group_aux_node->identifier.text)){
         return false;
     }
-    int input = get_output(group_aux_node->identifier.text);
+    unsigned int input = get_output(group_aux_node->identifier.text);
     input += checkGroupAux(group_aux_node->group_aux_node, in);
     return input;
 }
