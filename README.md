@@ -23,17 +23,6 @@ Si se desea correr al compilador con un programa (como `test/accept/01-simplecir
 ```bash
 script/start.sh test/accept/01-SimpleCircuit
 ```
-Si se quiere revisar los logs cuando se ejecuta, se debe descomentar la siguiente línea en `src/backend/support/logger.h`
-```c
-#define DEBUG true
-```
-
-
-## Utilizacion
-Si desea utilizar el codigo compilado, debe ingresar por entrada estandart texto en formato csv y recibirá la salida por la salida estandart.
-```bash
-script/start.sh test/accept/01-SimpleCircuit
-```
 ### Archivo de salida
 Es posible indicar el nombre del archivo donde se desea guardar la compilación.
 Para ello, se debe agregar un segundo parámetro al comando anterior, indicando el nombre del archivo de salida.
@@ -44,3 +33,36 @@ En este caso, la compilación se guardará en el archivo `out.py`.
 <br>
 <br>
 Si no se indica el nombre del archivo de salida, se guardará en `salida.py` por defecto.
+
+Si se quiere revisar los logs cuando se ejecuta, se debe descomentar la siguiente línea en `src/backend/support/logger.h`
+```c
+#define DEBUG true
+```
+### Utilizacion del codigo compilado
+Para la utilizacion del codigo compilado resulta necesario ingresar por entrada estandart texto en formato csv con una entrada por fila.
+La salida del progrma se realizará por la salida estandart.
+En ambos casos se podrá y se recomienda la utilizacion de archivos .csv y la utilizacion de utilidades de consola para la redireccion de las entradas y salidas del programa.
+<br>
+<br>
+Ingresando un archivo como entrada al programa 
+```bash
+python3 salida.py < input.csv
+```
+Ingresando de forma manual una entrada al programa
+```bash
+echo "10101" | python3 salida.py
+```
+Obteniendo la salida por la terminal del usuario
+```bash
+python3 salida.py < input.csv
+```
+Obteniendo la salida en un documento .csv
+```bash
+python3 salida.py < input.csv > output.csv
+```
+### Conexion de diferentes programas
+Una utilidad que le da mucha potencia al lenguaje es la posibilidad de interconetar script previamente compilados mediante el uso de la terminal.
+```bash
+python3 proc1.py < input.csv | python3 proc2.py > output.csv
+```
+Para 
