@@ -2,13 +2,11 @@
 #include "../support/logger.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include "../support/garbage_collector.h"
 
 static symbol_table* symbol_table_info;
 
 void add_data_table_symbol(char *name, int input, int output, bool is_proc);
-
 
 void init_symbol_table(){
     symbol_table_info = Malloc(sizeof(symbol_table));
@@ -40,7 +38,6 @@ void add_proc_symbol_table(char * name, int input, int output){
 void create_scope(){
     symbol_table* symbol_table = symbol_table_info;
     symbol_table->index_scope++;
-    printf("%d", symbol_table->index_scope);
     symbol_table->scopes_symbol++;
     symbol_table->scopes[symbol_table->index_scope] =symbol_table->scopes_symbol;
 }
@@ -94,7 +91,6 @@ void set_input_output_var(char* name, unsigned int value){
         if(strcmp(symbol_table_info->variables_array[i]->name, name) == 0){
             symbol_table_info->variables_array[i]->input = value;
             symbol_table_info->variables_array[i]->output = value;
-            printf("entreeeeeeeeee");
         }
     }
 }
@@ -122,13 +118,6 @@ void add_data_table_symbol(char *name, int input, int output, bool is_proc){
     symbol_table_info->variables_array[symbol_table_info->variables_count]->is_proc = is_proc;
     symbol_table_info->variables_array[symbol_table_info->variables_count]->scope=symbol_table_info->scopes[symbol_table_info->index_scope];
     symbol_table_info->variables_count++;
-
-    for(int i=0; i<symbol_table_info->variables_count; i++){
-        printf("nombre: %s:\n", symbol_table_info->variables_array[i]->name);
-        printf("scope: %d\n\n\n", symbol_table_info->variables_array[i]->scope);
-        printf("input: %d\n\n\n", symbol_table_info->variables_array[i]->input);
-        printf("output: %d\n\n\n", symbol_table_info->variables_array[i]->output);
-    }
 }
 
 

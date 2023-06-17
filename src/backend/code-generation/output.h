@@ -4,7 +4,6 @@
 
 typedef struct outputCDT * outputADT;
 
-
 outputADT output_init(const char * file_path, const char * file_mode);
 
 void write_output(outputADT out, const char * str);

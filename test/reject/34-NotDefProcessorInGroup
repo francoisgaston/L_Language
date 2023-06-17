@@ -1,0 +1,7 @@
+proc A {
+    #0 = NOT($0);
+    #10 = NOT($3);
+};
+
+INPUT (7);
+INPUT -> A -> { A, A, B } -> OUTPUT;

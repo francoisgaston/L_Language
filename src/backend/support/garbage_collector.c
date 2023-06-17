@@ -1,4 +1,3 @@
-
 #include "garbage_collector.h"
 #include <stdlib.h>
 #include <errno.h>

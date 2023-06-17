@@ -11,11 +11,8 @@
  * Implementación de "generator.h".
  */
 
-void Generator(int result) {
-	LogInfo("El resultado de la expresion computada es: '%d'.", result);
-}
-
 static outputADT output_info;
+//FUNCIONES PARA RECORRER EL ARBOL
 static void generateProgramNode(const program_node * program_node);
 static void generateProcessorNode(const processor_node* processor_node);
 static void generateBlockNode(const block_node* block_node);
@@ -29,35 +26,16 @@ static void generateArrowNode(const arrow_node* arrow_node,char* var);
 static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var);
 static void generateGroupNode(const group_node* group_node, char* var);
 static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_node, char* var);
-static void generateGroupVarNode(const group_var_node* new_line_arrow_node);
+static void generateGroupVarNode(const group_var_node* group_var_node);
 static void generateGroupAuxVarNode(const group_aux_var_node * group_aux_var_node);
-
+//FUNCIONES AUXILIARES
+void output(char * str);
+void output_LF(char * str);
+void output_ATAB_LF(char * str);
+void output_RTAB_LF(char * str);
+void printError(char * err);
 char* strToupper(char* str);
 
-void output(char * str){
-	write_output(output_info, str);
-}
-
-void output_LF(char * str) {
-	write_output(output_info, str);
-	new_line(output_info);
-}
-
-void output_ATAB_LF(char * str) {
-	write_output(output_info, str);
-	add_tab(output_info);
-	new_line(output_info);
-}
-
-void output_RTAB_LF(char * str) {
-	write_output(output_info, str);
-	reduce_tab(output_info);
-	new_line(output_info);
-}
-
-void printError(char * err) {
-	LogError("Invalid AST: '%s'", err);
-}
 
 void generatorCode(const program_node * program_node){
 	LogDebug("Entre a generatorCode");
@@ -86,7 +64,6 @@ static void generateProgramNode(const program_node * program_node){
 
 static void generateProcessorNode(const processor_node* processor_node){
 	LogDebug("Entre a generateProcessorNode");
-	//Definicion de la funcion para el procesador
 	output("def proc_");
 	output(processor_node->identifier.text);
 	output("(input):");
@@ -274,12 +251,6 @@ static void generateArrowNode(const arrow_node* arrow_node, char * var){
 		output_LF(" = output.copy()");
 		generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
 		break;
-	case group_identifier_end_type:
-        //LogDebug("Entre en group_identifier_end_type");
-        //generateGroupVarNode(arrow_node->group_var_node);
-        //generateNewLineArrowNode(arrow_node->new_line_arrow_node, "output");
-		//ESTADO INVALIDO?
-		break;
 	default:
 		break;
 	}
@@ -295,7 +266,7 @@ static void generateNewLineArrowNode(const new_line_arrow_node* new_line_arrow_n
 		break;
 	case single_identifier_new_line_type:
 		LogDebug("Entre en single_identifier_new_line_type");
-        int len = strlen(new_line_arrow_node->identifier.text);
+        unsigned int len = strlen(new_line_arrow_node->identifier.text);
         char*  aux = Calloc(len+6,sizeof(char));
         if(aux == NULL) {
             LogError("Cannot generate SingleIdentifierNewLine Node");
@@ -375,7 +346,7 @@ static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var
 			output("(");	
 			output(var);
 			output("), ");
-			generateGroupAuxNode(group_aux_node, var);
+			generateGroupAuxNode(group_aux_node->group_aux_node, var);
 			break;
 		default:
 			printError("Invalid argument_node");
@@ -383,10 +354,36 @@ static void generateGroupAuxNode(const group_aux_node* group_aux_node, char* var
 	}
 }
 
+// FUNCIONES AUXILIARES
+void output(char * str){
+    write_output(output_info, str);
+}
+
+void output_LF(char * str) {
+    write_output(output_info, str);
+    new_line(output_info);
+}
+
+void output_ATAB_LF(char * str) {
+    write_output(output_info, str);
+    add_tab(output_info);
+    new_line(output_info);
+}
+
+void output_RTAB_LF(char * str) {
+    write_output(output_info, str);
+    reduce_tab(output_info);
+    new_line(output_info);
+}
+
+void printError(char * err) {
+    LogError("Invalid AST: '%s'", err);
+}
 
 char* strToupper(char* str) {
-  for(char *p=str; *p; p++){
-	 *p=toupper(*p);
-  }
-  return str;
+    for(char *p=str; *p; p++){
+        *p=toupper(*p);
+    }
+    return str;
 }
+

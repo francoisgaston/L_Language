@@ -23,7 +23,6 @@ const int main(const int argumentCount, const char ** arguments) {
 	// Compilar el programa de entrada.
 	LogInfo("Compilando...\n");
     init_symbol_table();
-    printf("SALIDA");
     const int result = yyparse();
 	switch (result) {
 		case 0:

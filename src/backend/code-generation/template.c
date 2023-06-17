@@ -33,6 +33,7 @@ static char * (*template_funcs [])(void) = {
     get_xor,
     get_not,
     get_nand,
+    get_nor,
     get_xnor,
     get_buff,
     get_bitarr_to_str,
