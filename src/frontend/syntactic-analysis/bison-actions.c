@@ -541,6 +541,10 @@ int getOutputProcesor(const block_node* block_node){
         && out <= aux.line_node->exit_var_node->exit_var_index.n){
             out = aux.line_node->exit_var_node->exit_var_index.n+1;
     }
+    if(out >= 1024){
+        LogError("Output greater than 1024");
+        exit(1);
+    }
     return out;
 }
 

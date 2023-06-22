@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "symbol-table.h"
 #include "../support/garbage_collector.h"
 
 /**
@@ -71,13 +72,16 @@ static void generateProgramNode(const program_node * program_node){
 }
 
 static void generateProcessorNode(const processor_node* processor_node){
+    char aux [10];
 	LogDebug("Entre a generateProcessorNode");
 	output("def proc_");
 	output(processor_node->identifier.text);
 	output("(input):");
 	add_tab(output_info);
 	new_line(output_info);
-	output_LF("out = [2]*1024");
+	output("out = [2]*");
+    sprintf(aux, "%d", get_output(processor_node->identifier.text));
+    output_LF(aux);
 	generateBlockNode(processor_node->block_node);
 	output_RTAB_LF("return out");
 	new_line(output_info);

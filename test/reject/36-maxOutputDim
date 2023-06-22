@@ -1,0 +1,16 @@
+proc A {
+    #1024 = AND($0, $1);
+    #4 = OR($0, $2);
+};
+
+proc B {
+    aux = AND($0, $1);
+    aux2 = NOT($2);
+    //esto es un comentario
+    #0 = OR(aux, $4);
+    #1 = OR(aux, $2);
+};
+
+INPUT (3);
+
+INPUT -> A -> B -> OUTPUT;
