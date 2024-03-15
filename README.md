@@ -1,7 +1,7 @@
 # TPE_TLA
 ## The L programming language
 
-#### Una extensión del proyecto [Flex-Bison-Compiler](https://github.com/agustin-golmar/Flex-Bison-Compiler) 
+#### Una extensiónn del proyecto [Flex-Bison-Compiler](https://github.com/agustin-golmar/Flex-Bison-Compiler) 
 <hr>
 
 ## Compilación
